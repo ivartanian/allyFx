@@ -83,7 +83,9 @@ public class FXMonthViewSkin extends SkinBase<FXMonthView>
 		
 		updateMonthView(getSkinnable().getVisibleMonth());
 		
-		getSkinnable().selectedDateProperty().addListener(this::onSelectedDateChanged);
+		getSkinnable().selectedDateProperty().addListener((pObservable, pOldValue, pNewValue) -> {
+			onSelectedDateChanged(pObservable, pOldValue, pNewValue);
+		});
 		getSkinnable().visibleMonthProperty().addListener(this::onVisibleMonthChanged);
 	}
 	
@@ -139,7 +141,7 @@ public class FXMonthViewSkin extends SkinBase<FXMonthView>
 		day.getStylesheets().add(FXMonthView.DEFAULT_STYLE);
 		day.setAlignment(Pos.CENTER);
 		day.setMaxSize(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-		day.setOnSelectedChanged(this::onSelectedDayChanged);
+		day.setOnSelectedChanged(FXMonthViewSkin.this::onSelectedDayChanged);
 		
 		dayLabels.add(day);
 		

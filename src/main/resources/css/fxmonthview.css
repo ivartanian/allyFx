@@ -67,3 +67,176 @@
 	-fx-min-width: 2em;
 	-fx-text-fill: -fx-selection-bar;
 }
+
+
+/*******************************************************************************
+ *                                                                             *
+ * DatePicker                                                                  *
+ *                                                                             *
+ ******************************************************************************/
+
+.arrow-button > .arrow {
+	-fx-shape: "M0,0v9h9V0H0z M2,8H1V7h1V8z M2,6H1V5h1V6z M2,4H1V3h1V4z M4,8H3V7h1V8z M4,6H3V5h1V6z M4,4H3V3h1V4z M6,8H5V7h1V8z M6,6H5 V5h1V6z M6,4H5V3h1V4z M8,8H7V7h1V8z M8,6H7V5h1V6z M8,4H7V3h1V4z";
+	-fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
+	-fx-background-insets: 1 0 -1 0, 0;
+	-fx-padding: 0.416667em 0.416667em 0.333333em 0.333333em; /* 5 5 4 4 */
+	-fx-scale-shape: true;
+}
+
+.month-year-pane {
+	-fx-padding: 0.588883em 0.5em 0.666667em 0.5em; /* 7 6 8 6 */
+	-fx-background-color: derive(-fx-box-border,30%), linear-gradient(to bottom, derive(-fx-base,-3%), derive(-fx-base,5%) 50%, derive(-fx-base,-3%));
+	-fx-background-insets: 0 0 0 0, 0 0 1 0;
+}
+.spinner {
+	-fx-spacing: 0.25em; /* 3 */
+	-fx-alignment: CENTER;
+	-fx-fill-height: false;
+	-fx-background-color: transparent;
+}
+.spinner > .button {
+	-fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
+	-fx-background-insets: 0, 1, 2;
+	-fx-color: transparent;
+	-fx-background-radius: 0;
+}
+.spinner > .button:focused {
+	-fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color;
+	-fx-color: -fx-hover-base;
+	-fx-background-insets: -0.2, 1, 2, -1.4, 2.6;
+}
+.spinner > .button:hover {
+	-fx-color: -fx-hover-base;
+}
+.spinner > .button:armed {
+	-fx-color: -fx-pressed-base;
+}
+.spinner > .left-button {
+	-fx-padding: 0 0.333333em 0 0.25em; /* 0 4 0 3 */
+}
+.spinner > .right-button {
+	-fx-padding: 0 0.25em 0 0.333333em; /* 0 3 0 4 */
+}
+.spinner > .button > .left-arrow,
+.spinner > .button > .right-arrow {
+	-fx-background-color: -fx-mark-highlight-color, derive(-fx-base,-45%);
+	-fx-background-insets: 1 0 -1 0, 0;
+	-fx-padding: 0.333333em 0.166667em 0.333333em 0.166667em; /* 4 2 4 2 */
+	-fx-effect: dropshadow(two-pass-box , -fx-shadow-highlight-color, 1, 0.0 , 0, 1.4);
+}
+.spinner > .button:hover > .left-arrow,
+.spinner > .button:hover > .right-arrow {
+	-fx-background-color: -fx-mark-highlight-color, derive(-fx-base,-50%);
+}
+.spinner > .button:pressed > .left-arrow,
+.spinner > .button:pressed > .right-arrow {
+	-fx-background-color: -fx-mark-highlight-color, derive(-fx-base,-55%);
+}
+.spinner > .button > .left-arrow {
+	-fx-padding: 0.333333em 0.25em 0.333333em 0.166667em; /* 4 3 4 2 */
+	-fx-shape: "M5.997,5.072L5.995,6.501l-2.998-4l2.998-4l0.002,1.43l-1.976,2.57L5.997,5.072z";
+	-fx-scale-shape: true;
+}
+.spinner > .button > .right-arrow {
+	-fx-padding: 0.333333em 0.25em 0.333333em 0.166667em; /* 4 3 4 2 */
+	-fx-shape: "M2.998-0.07L3-1.499l2.998,4L3,6.501l-0.002-1.43l1.976-2.57L2.998-0.07z";
+	-fx-scale-shape: true;
+}
+.spinner > .label {
+	-fx-alignment: CENTER;
+}
+.month-year-pane > .secondary-label {
+	-fx-alignment: BASELINE_CENTER;
+	-fx-padding: 0.5em 0 0 0; /* 6 0 0 0 */
+	-fx-text-fill: #f3622d;
+}
+
+.calendar-grid {
+	/*-fx-background-color: derive(-fx-selection-bar-non-focused, 60%);*/
+	/*-fx-background-insets: 1 0 0 0;*/
+	/*-fx-padding: 0;*/
+}
+.date-cell {
+	-fx-background-color: transparent;
+	-fx-background-insets: 1, 2;
+	-fx-padding: 0;
+	-fx-alignment: BASELINE_CENTER;
+	-fx-opacity: 1.0;
+}
+.day-name-cell,
+.week-number-cell {
+	-fx-font-size: 0.916667em;
+}
+.week-number-cell {
+	-fx-padding: 0.333333em 0.583333em 0.333333em 0.583333em; /* 4 7 4 7 */
+	-fx-border-color: -fx-control-inner-background;
+	-fx-border-width: 1px;
+	-fx-background: -fx-control-inner-background;
+	-fx-background-color: -fx-background;
+	-fx-text-fill: -fx-accent;
+}
+.day-cell {
+	-fx-padding: 0.333333em 0.583333em 0.333333em 0.583333em; /* 4 7 4 7 */
+	-fx-border-color: derive(-fx-selection-bar-non-focused, 60%);
+	-fx-border-width: 1px;
+	-fx-font-size: 1em;
+	-fx-background: -fx-control-inner-background;
+	-fx-background-color: -fx-background;
+	-fx-text-fill: -fx-text-background-color;
+}
+.hijrah-day-cell {
+	-fx-alignment: TOP_LEFT;
+	-fx-padding: 0.083333em 0.333333em 0.083333em 0.333333em; /* 1 4 1 4 */
+	-fx-cell-size: 2.75em;
+}
+.day-cell > .secondary-text {
+	-fx-fill: #f3622d;
+}
+.today {
+	-fx-background-color: -fx-control-inner-background, derive(-fx-selection-bar-non-focused, -20%), -fx-control-inner-background;
+	-fx-background-insets: 1, 2, 3;
+}
+.day-cell:hover,
+.selected,
+.previous-month.selected,
+.next-month.selected {
+	-fx-background: -fx-selection-bar;
+}
+.previous-month:hover,
+.next-month:hover {
+	-fx-background: -fx-selection-bar-non-focused;
+}
+.today:hover,
+.today.selected {
+	-fx-background-color: -fx-selection-bar, derive(-fx-selection-bar-non-focused, -20%),-fx-selection-bar;
+}
+.day-cell:focused,
+.today:focused {
+	-fx-background-color: -fx-control-inner-background, -fx-cell-focus-inner-border, -fx-control-inner-background;
+	-fx-background-insets: 1, 2, 3;
+}
+.day-cell:focused:hover,
+.today:focused:hover,
+.selected:focused,
+.today.selected:focused {
+	-fx-background-color: -fx-selection-bar, -fx-cell-focus-inner-border, -fx-selection-bar;
+}
+.previous-month,
+.next-month {
+	-fx-background: derive(-fx-control-inner-background, -4%);
+}
+.day-cell:hover > .secondary-text,
+.previous-month > .secondary-text,
+.next-month > .secondary-text,
+.selected > .secondary-text {
+	-fx-fill: -fx-text-background-color;
+}
+.previous-month.today,
+.next-month.today {
+	-fx-background-color: derive(-fx-control-inner-background, -4%), derive(-fx-selection-bar-non-focused, -20%), derive(-fx-control-inner-background, -4%);
+}
+
+.previous-month.today:hover,
+.next-month.today:hover {
+	-fx-background-color: -fx-selection-bar-non-focused, derive(-fx-selection-bar-non-focused, -20%), -fx-selection-bar-non-focused;
+}
