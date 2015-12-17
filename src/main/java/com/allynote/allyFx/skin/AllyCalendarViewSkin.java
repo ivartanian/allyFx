@@ -371,6 +371,13 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
         }
     }
 
+    void refresh() {
+        updateMonthLabelWidth();
+        updateDayNameCells();
+        updateValues();
+    }
+
+
 
 
 
@@ -462,12 +469,6 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
 		monthYearPane.setRight(yearSpinner);
 
 		return monthYearPane;
-	}
-
-	void refresh() {
-		updateMonthLabelWidth();
-		updateDayNameCells();
-		updateValues();
 	}
 
 	void updateDayNameCells() {
