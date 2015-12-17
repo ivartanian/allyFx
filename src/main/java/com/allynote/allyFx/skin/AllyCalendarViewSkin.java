@@ -1,25 +1,7 @@
-/*
- * Copyright 2015 SIB Visions GmbH
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package com.allynote.allyFx.skin;
 
 import com.allynote.allyFx.behavior.AllyCalendarViewBehavior;
 import com.allynote.allyFx.control.AllyCalendarView;
-import com.allynote.allyFx.control.FXCalendarView;
-import com.allynote.allyFx.control.FXMonthView;
-import com.sun.javafx.scene.control.behavior.SliderBehavior;
 import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
 import com.sun.javafx.scene.control.skin.resources.ControlResources;
 import com.sun.javafx.scene.text.TextLayout;
@@ -28,7 +10,9 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.DateCell;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -52,27 +36,13 @@ import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoUnit.*;
 
-/**
- * The default skin for the {@link FXMonthView}.
- * 
- * @author Robert Zenz
- */
+
 public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, AllyCalendarViewBehavior>
 {
 
 	public static final double USE_PREF_SIZE = Double.NEGATIVE_INFINITY;
 
 	private VBox vBox;
-
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	// Initialization
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-	/**
-	 * Creates a new instance of {@link AllyCalendarViewSkin}.
-	 *
-	 * @param pControl the control.
-	 */
 
 	private Button backMonthButton;
 	private Button forwardMonthButton;
@@ -83,13 +53,18 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
 	protected GridPane gridPane;
 
 	private int daysPerWeek;
-	private List<DateCell> dayNameCells = new ArrayList<DateCell>();
-	private List<DateCell> weekNumberCells = new ArrayList<DateCell>();
-	protected List<DateCell> dayCells = new ArrayList<DateCell>();
+	private List<DateCell> dayNameCells = new ArrayList<>();
+	private List<DateCell> weekNumberCells = new ArrayList<>();
+	protected List<DateCell> dayCells = new ArrayList<>();
 	private LocalDate[] dayCellDates;
 	private DateCell lastFocusedDayCell = null;
 
-	final DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM");
+    private ObjectProperty<YearMonth> displayedYearMonth = new SimpleObjectProperty<YearMonth>(this, "displayedYearMonth");
+    public ObjectProperty<YearMonth> displayedYearMonthProperty() {
+        return displayedYearMonth;
+    }
+
+    final DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM");
 
 	final DateTimeFormatter monthFormatterSO = DateTimeFormatter.ofPattern("LLLL"); // Standalone month name
 
@@ -103,9 +78,9 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
 
 	final DateTimeFormatter dayCellFormatter = DateTimeFormatter.ofPattern("d");
 
-	public String getString(String key) {
-		return ControlResources.getString("DatePicker." + key);
-	}
+//	public String getString(String key) {
+//		return ControlResources.getString("DatePicker." + key);
+//	}
 
 
 
@@ -115,7 +90,7 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
 
 		vBox = new VBox();
 
-		vBox.getStyleClass().add("date-picker-popup");
+		vBox.getStyleClass().add("ally-calendar");
 
 		daysPerWeek = getDaysPerWeek();
 
@@ -130,35 +105,36 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
 
 		if (allyCalendarView.isShowMonthYearPane()){
 			vBox.getChildren().add(createMonthYearPane());
-//			getChildren().add(createMonthYearPane());
 		}
 
-		gridPane = new GridPane() {
-			@Override
-			protected double computePrefWidth(double height) {
-				final double width = super.computePrefWidth(height);
+		gridPane = new GridPane();
+//        {
+//			@Override
+//			protected double computePrefWidth(double height) {
+//				final double width = super.computePrefWidth(height);
+//
+//				// RT-30903: Make sure width snaps to pixel when divided by
+//				// number of columns. GridPane doesn't do this with percentage
+//				// width constraints. See GridPane.adjustColumnWidths().
+//				final int nCols = daysPerWeek + (allyCalendarView.isShowWeekNumbers() ? 1 : 0);
+//				final double snaphgap = snapSpace(getHgap());
+//				final double left = snapSpace(getInsets().getLeft());
+//				final double right = snapSpace(getInsets().getRight());
+//				final double hgaps = snaphgap * (nCols - 1);
+//				final double contentWidth = width - left - right - hgaps;
+//				return ((snapSize(contentWidth / nCols)) * nCols) + left + right + hgaps;
+//			}
+//
+//			@Override
+//			protected void layoutChildren() {
+//				// Prevent AssertionError in GridPane
+//				if (getWidth() > 0 && getHeight() > 0) {
+//					super.layoutChildren();
+//				}
+//			}
+//		};
 
-				// RT-30903: Make sure width snaps to pixel when divided by
-				// number of columns. GridPane doesn't do this with percentage
-				// width constraints. See GridPane.adjustColumnWidths().
-				final int nCols = daysPerWeek + (allyCalendarView.isShowWeekNumbers() ? 1 : 0);
-				final double snaphgap = snapSpace(getHgap());
-				final double left = snapSpace(getInsets().getLeft());
-				final double right = snapSpace(getInsets().getRight());
-				final double hgaps = snaphgap * (nCols - 1);
-				final double contentWidth = width - left - right - hgaps;
-				return ((snapSize(contentWidth / nCols)) * nCols) + left + right + hgaps;
-			}
-
-			@Override
-			protected void layoutChildren() {
-				// Prevent AssertionError in GridPane
-				if (getWidth() > 0 && getHeight() > 0) {
-					super.layoutChildren();
-				}
-			}
-		};
-		gridPane.setFocusTraversable(true);
+//		gridPane.setFocusTraversable(true);
 		gridPane.getStyleClass().add("calendar-grid");
 		gridPane.setVgap(-1);
 		gridPane.setHgap(-1);
@@ -190,15 +166,225 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
 
 	}
 
-	private ObjectProperty<YearMonth> displayedYearMonth =
-			new SimpleObjectProperty<YearMonth>(this, "displayedYearMonth");
+    private int getDaysPerWeek() {
+        ValueRange range = getPrimaryChronology().range(DAY_OF_WEEK);
+        return (int) (range.getMaximum() - range.getMinimum() + 1);
+    }
 
-	ObjectProperty<YearMonth> displayedYearMonthProperty() {
-		return displayedYearMonth;
-	}
+    void updateValues() {
+        // Note: Preserve this order, as DatePickerHijrahContent needs
+        // updateDayCells before updateMonthYearPane().
+        updateWeeknumberDateCells();
+        updateDayCells();
+        if (getSkinnable().isShowMonthYearPane()){
+            updateMonthYearPane();
+        }
+    }
+
+    void updateWeeknumberDateCells() {
+        if (getSkinnable().isShowWeekNumbers()) {
+            final Locale locale = getLocale();
+            final int maxWeeksPerMonth = 6; // TODO: Get this from chronology?
+
+            LocalDate firstOfMonth = displayedYearMonth.get().atDay(1);
+            for (int i = 0; i < maxWeeksPerMonth; i++) {
+                LocalDate date = firstOfMonth.plus(i, WEEKS);
+                // Use a formatter to ensure correct localization,
+                // such as when Thai numerals are required.
+                String cellText = weekNumberFormatter.withLocale(locale)
+                                .withDecimalStyle(DecimalStyle.of(locale))
+                                .format(date);
+                weekNumberCells.get(i).setText(cellText);
+            }
+        }
+    }
+
+    /**
+     * update values
+     */
+    void updateDayCells() {
+        Locale locale = getLocale();
+        Chronology chrono = getPrimaryChronology();
+        int firstOfMonthIdx = determineFirstOfMonthDayOfWeek();
+        YearMonth curMonth = displayedYearMonth.get();
+
+        // RT-31075: The following are now set in the try-catch block.
+        YearMonth prevMonth = null;
+        YearMonth nextMonth = null;
+        int daysInCurMonth = -1;
+        int daysInPrevMonth = -1;
+        int daysInNextMonth = -1;
+
+        for (int i = 0; i < 6 * daysPerWeek; i++) {
+            DateCell dayCell = dayCells.get(i);
+            dayCell.getStyleClass().setAll("cell", "date-cell", "day-cell");
+            dayCell.setDisable(false);
+            dayCell.setStyle(null);
+            dayCell.setGraphic(null);
+            dayCell.setTooltip(null);
+
+            try {
+                if (daysInCurMonth == -1) {
+                    daysInCurMonth = curMonth.lengthOfMonth();
+                }
+                YearMonth month = curMonth;
+                int day = i - firstOfMonthIdx + 1;
+                //int index = firstOfMonthIdx + i - 1;
+                if (i < firstOfMonthIdx) {
+                    if (prevMonth == null) {
+                        prevMonth = curMonth.minusMonths(1);
+                        daysInPrevMonth = prevMonth.lengthOfMonth();
+                    }
+                    month = prevMonth;
+                    day = i + daysInPrevMonth - firstOfMonthIdx + 1;
+                    dayCell.getStyleClass().add("previous-month");
+                } else if (i >= firstOfMonthIdx + daysInCurMonth) {
+                    if (nextMonth == null) {
+                        nextMonth = curMonth.plusMonths(1);
+                        daysInNextMonth = nextMonth.lengthOfMonth();
+                    }
+                    month = nextMonth;
+                    day = i - daysInCurMonth - firstOfMonthIdx + 1;
+                    dayCell.getStyleClass().add("next-month");
+                }
+                LocalDate date = month.atDay(day);
+                dayCellDates[i] = date;
+                ChronoLocalDate cDate = chrono.date(date);
+
+                dayCell.setDisable(false);
+
+                if (isToday(date)) {
+                    dayCell.getStyleClass().add("today");
+                }
+
+                if (date.equals(getSkinnable().getSelectedDate())) {
+                    dayCell.getStyleClass().add("selected");
+                }
+
+                String cellText = dayCellFormatter.withLocale(locale)
+                                .withChronology(chrono)
+                                .withDecimalStyle(DecimalStyle.of(locale))
+                                .format(cDate);
+                dayCell.setText(cellText);
+
+                dayCell.updateItem(date, false);
+            } catch (DateTimeException ex) {
+                // Date is out of range.
+                // System.err.println(dayCellDate(dayCell) + " " + ex);
+                dayCell.setText(" ");
+                dayCell.setDisable(true);
+            }
+        }
+    }
+
+    /**
+     * determine on which day of week idx the first of the months is
+     */
+    private int determineFirstOfMonthDayOfWeek() {
+        // determine with which cell to start
+        int firstDayOfWeek = WeekFields.of(getLocale()).getFirstDayOfWeek().getValue();
+        int firstOfMonthIdx = displayedYearMonth.get().atDay(1).getDayOfWeek().getValue() - firstDayOfWeek;
+        if (firstOfMonthIdx < 0) {
+            firstOfMonthIdx += daysPerWeek;
+        }
+        return firstOfMonthIdx;
+    }
+
+    protected void createDayCells() {
+        final EventHandler<MouseEvent> dayCellActionHandler = ev -> {
+            if (ev.getButton() != MouseButton.PRIMARY) {
+                return;
+            }
+
+            DateCell dayCell = (DateCell) ev.getSource();
+            selectDayCell(dayCell);
+            lastFocusedDayCell = dayCell;
+        };
+
+//        getSkinnable().selectedDateProperty().addListener(this::onSelectedDateChanged);
+
+        for (int row = 0; row < 6; row++) {
+            for (int col = 0; col < daysPerWeek; col++) {
+                DateCell dayCell = createDayCell();
+                dayCell.addEventHandler(MouseEvent.MOUSE_CLICKED, dayCellActionHandler);
+                dayCells.add(dayCell);
+            }
+        }
+
+        dayCellDates = new LocalDate[6 * daysPerWeek];
+    }
+
+    // public for behavior class
+    public void selectDayCell(DateCell dateCell) {
+        getSkinnable().setSelectedDate(dayCellDate(dateCell));
+    }
+
+    private DateCell createDayCell() {
+        DateCell cell = null;
+        if (getSkinnable().getDayCellFactory() != null) {
+            cell = getSkinnable().getDayCellFactory().call(getSkinnable());
+        }
+        if (cell == null) {
+            cell = new DateCell();
+        }
+
+        return cell;
+    }
+
+    protected LocalDate dayCellDate(DateCell dateCell) {
+        assert (dayCellDates != null);
+        return dayCellDates[dayCells.indexOf(dateCell)];
+    }
+
+    private boolean isToday(LocalDate localDate) {
+        return (localDate.equals(LocalDate.now()));
+    }
+
+    void updateGrid() {
+        gridPane.getColumnConstraints().clear();
+        gridPane.getChildren().clear();
+
+        int nCols = daysPerWeek + (getSkinnable().isShowWeekNumbers() ? 1 : 0);
+
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setPercentWidth(100); // Treated as weight
+        for (int i = 0; i < nCols; i++) {
+            gridPane.getColumnConstraints().add(columnConstraints);
+        }
+
+        for (int i = 0; i < daysPerWeek; i++) {
+            gridPane.add(dayNameCells.get(i), i + nCols - daysPerWeek, 1);  // col, row
+        }
+
+        // Week number column
+        if (getSkinnable().isShowWeekNumbers()) {
+            for (int i = 0; i < 6; i++) {
+                gridPane.add(weekNumberCells.get(i), 0, i + 2);  // col, row
+            }
+        }
+
+        // setup: 6 rows of daysPerWeek (which is the maximum number of cells required in the worst case layout)
+        for (int row = 0; row < 6; row++) {
+            for (int col = 0; col < daysPerWeek; col++) {
+                gridPane.add(dayCells.get(row * daysPerWeek + col), col + nCols - daysPerWeek, row + 2);
+            }
+        }
+    }
 
 
-	protected BorderPane createMonthYearPane() {
+
+
+
+
+
+
+
+
+
+
+
+
+    protected BorderPane createMonthYearPane() {
 		BorderPane monthYearPane = new BorderPane();
 		monthYearPane.getStyleClass().add("month-year-pane");
 
@@ -284,47 +470,6 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
 		updateValues();
 	}
 
-	void updateValues() {
-		// Note: Preserve this order, as DatePickerHijrahContent needs
-		// updateDayCells before updateMonthYearPane().
-		updateWeeknumberDateCells();
-		updateDayCells();
-		if (getSkinnable().isShowMonthYearPane()){
-			updateMonthYearPane();
-		}
-	}
-
-	void updateGrid() {
-		gridPane.getColumnConstraints().clear();
-		gridPane.getChildren().clear();
-
-		int nCols = daysPerWeek + (getSkinnable().isShowWeekNumbers() ? 1 : 0);
-
-		ColumnConstraints columnConstraints = new ColumnConstraints();
-		columnConstraints.setPercentWidth(100); // Treated as weight
-		for (int i = 0; i < nCols; i++) {
-			gridPane.getColumnConstraints().add(columnConstraints);
-		}
-
-		for (int i = 0; i < daysPerWeek; i++) {
-			gridPane.add(dayNameCells.get(i), i + nCols - daysPerWeek, 1);  // col, row
-		}
-
-		// Week number column
-		if (getSkinnable().isShowWeekNumbers()) {
-			for (int i = 0; i < 6; i++) {
-				gridPane.add(weekNumberCells.get(i), 0, i + 2);  // col, row
-			}
-		}
-
-		// setup: 6 rows of daysPerWeek (which is the maximum number of cells required in the worst case layout)
-		for (int row = 0; row < 6; row++) {
-			for (int col = 0; col < daysPerWeek; col++) {
-				gridPane.add(dayCells.get(row * daysPerWeek + col), col + nCols - daysPerWeek, row + 2);
-			}
-		}
-	}
-
 	void updateDayNameCells() {
 		// first day of week, 1 = monday, 7 = sunday
 		int firstDayOfWeek = WeekFields.of(getLocale()).getFirstDayOfWeek().getValue();
@@ -335,106 +480,6 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
 			String name = weekDayNameFormatter.withLocale(getLocale()).format(date.plus(i, DAYS));
 			dayNameCells.get(i).setText(titleCaseWord(name));
 		}
-	}
-
-	void updateWeeknumberDateCells() {
-		if (getSkinnable().isShowWeekNumbers()) {
-			final Locale locale = getLocale();
-			final int maxWeeksPerMonth = 6; // TODO: Get this from chronology?
-
-			LocalDate firstOfMonth = displayedYearMonth.get().atDay(1);
-			for (int i = 0; i < maxWeeksPerMonth; i++) {
-				LocalDate date = firstOfMonth.plus(i, WEEKS);
-				// Use a formatter to ensure correct localization,
-				// such as when Thai numerals are required.
-				String cellText =
-						weekNumberFormatter.withLocale(locale)
-								.withDecimalStyle(DecimalStyle.of(locale))
-								.format(date);
-				weekNumberCells.get(i).setText(cellText);
-			}
-		}
-	}
-
-	void updateDayCells() {
-		Locale locale = getLocale();
-		Chronology chrono = getPrimaryChronology();
-		int firstOfMonthIdx = determineFirstOfMonthDayOfWeek();
-		YearMonth curMonth = displayedYearMonth.get();
-
-		// RT-31075: The following are now set in the try-catch block.
-		YearMonth prevMonth = null;
-		YearMonth nextMonth = null;
-		int daysInCurMonth = -1;
-		int daysInPrevMonth = -1;
-		int daysInNextMonth = -1;
-
-		for (int i = 0; i < 6 * daysPerWeek; i++) {
-			DateCell dayCell = dayCells.get(i);
-			dayCell.getStyleClass().setAll("cell", "date-cell", "day-cell");
-			dayCell.setDisable(false);
-			dayCell.setStyle(null);
-			dayCell.setGraphic(null);
-			dayCell.setTooltip(null);
-
-			try {
-				if (daysInCurMonth == -1) {
-					daysInCurMonth = curMonth.lengthOfMonth();
-				}
-				YearMonth month = curMonth;
-				int day = i - firstOfMonthIdx + 1;
-				//int index = firstOfMonthIdx + i - 1;
-				if (i < firstOfMonthIdx) {
-					if (prevMonth == null) {
-						prevMonth = curMonth.minusMonths(1);
-						daysInPrevMonth = prevMonth.lengthOfMonth();
-					}
-					month = prevMonth;
-					day = i + daysInPrevMonth - firstOfMonthIdx + 1;
-					dayCell.getStyleClass().add("previous-month");
-				} else if (i >= firstOfMonthIdx + daysInCurMonth) {
-					if (nextMonth == null) {
-						nextMonth = curMonth.plusMonths(1);
-						daysInNextMonth = nextMonth.lengthOfMonth();
-					}
-					month = nextMonth;
-					day = i - daysInCurMonth - firstOfMonthIdx + 1;
-					dayCell.getStyleClass().add("next-month");
-				}
-				LocalDate date = month.atDay(day);
-				dayCellDates[i] = date;
-				ChronoLocalDate cDate = chrono.date(date);
-
-				dayCell.setDisable(false);
-
-				if (isToday(date)) {
-					dayCell.getStyleClass().add("today");
-				}
-
-				if (date.equals(getSkinnable().getSelectedDate())) {
-					dayCell.getStyleClass().add("selected");
-				}
-
-				String cellText =
-						dayCellFormatter.withLocale(locale)
-								.withChronology(chrono)
-								.withDecimalStyle(DecimalStyle.of(locale))
-								.format(cDate);
-				dayCell.setText(cellText);
-
-				dayCell.updateItem(date, false);
-			} catch (DateTimeException ex) {
-				// Date is out of range.
-				// System.err.println(dayCellDate(dayCell) + " " + ex);
-				dayCell.setText(" ");
-				dayCell.setDisable(true);
-			}
-		}
-	}
-
-	private int getDaysPerWeek() {
-		ValueRange range = getPrimaryChronology().range(DAY_OF_WEEK);
-		return (int) (range.getMaximum() - range.getMinimum() + 1);
 	}
 
 	private int getMonthsPerYear() {
@@ -542,29 +587,6 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
 		return str;
 	}
 
-
-	/**
-	 * determine on which day of week idx the first of the months is
-	 */
-	private int determineFirstOfMonthDayOfWeek() {
-		// determine with which cell to start
-		int firstDayOfWeek = WeekFields.of(getLocale()).getFirstDayOfWeek().getValue();
-		int firstOfMonthIdx = displayedYearMonth.get().atDay(1).getDayOfWeek().getValue() - firstDayOfWeek;
-		if (firstOfMonthIdx < 0) {
-			firstOfMonthIdx += daysPerWeek;
-		}
-		return firstOfMonthIdx;
-	}
-
-	private boolean isToday(LocalDate localDate) {
-		return (localDate.equals(LocalDate.now()));
-	}
-
-	protected LocalDate dayCellDate(DateCell dateCell) {
-		assert (dayCellDates != null);
-		return dayCellDates[dayCells.indexOf(dateCell)];
-	}
-
 	// public for behavior class
 	public void goToDayCell(DateCell dateCell, int offset, ChronoUnit unit, boolean focusDayCell) {
 		goToDate(dayCellDate(dateCell).plus(offset, unit), focusDayCell);
@@ -589,11 +611,6 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
 		}
 	}
 
-	// public for behavior class
-	public void selectDayCell(DateCell dateCell) {
-		getSkinnable().setSelectedDate(dayCellDate(dateCell));
-	}
-
 	private DateCell findDayCellForDate(LocalDate date) {
 		for (int i = 0; i < dayCellDates.length; i++) {
 			if (date.equals(dayCellDates[i])) {
@@ -601,42 +618,6 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
 			}
 		}
 		return dayCells.get(dayCells.size() / 2 + 1);
-	}
-
-	protected void createDayCells() {
-		final EventHandler<MouseEvent> dayCellActionHandler = ev -> {
-			if (ev.getButton() != MouseButton.PRIMARY) {
-				return;
-			}
-
-			DateCell dayCell = (DateCell) ev.getSource();
-			selectDayCell(dayCell);
-			lastFocusedDayCell = dayCell;
-		};
-
-		getSkinnable().selectedDateProperty().addListener(this::onSelectedDateChanged);
-
-		for (int row = 0; row < 6; row++) {
-			for (int col = 0; col < daysPerWeek; col++) {
-				DateCell dayCell = createDayCell();
-				dayCell.addEventHandler(MouseEvent.MOUSE_CLICKED, dayCellActionHandler);
-				dayCells.add(dayCell);
-			}
-		}
-
-		dayCellDates = new LocalDate[6 * daysPerWeek];
-	}
-
-	private DateCell createDayCell() {
-		DateCell cell = null;
-		if (getSkinnable().getDayCellFactory() != null) {
-			cell = getSkinnable().getDayCellFactory().call(getSkinnable());
-		}
-		if (cell == null) {
-			cell = new DateCell();
-		}
-
-		return cell;
 	}
 
 	protected Locale getLocale() {

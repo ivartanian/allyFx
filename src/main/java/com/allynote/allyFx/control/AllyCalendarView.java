@@ -16,31 +16,15 @@
 package com.allynote.allyFx.control;
 
 import com.allynote.allyFx.skin.AllyCalendarViewSkin;
-import com.allynote.allyFx.skin.FXCalendarViewSkin;
-import com.sun.javafx.css.converters.BooleanConverter;
-import com.sun.javafx.scene.control.skin.resources.ControlResources;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.WritableValue;
-import javafx.css.CssMetaData;
-import javafx.css.Styleable;
-import javafx.css.StyleableBooleanProperty;
-import javafx.css.StyleableProperty;
-import javafx.scene.control.Control;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.Skin;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import java.time.LocalDate;
-import java.time.chrono.Chronology;
-import java.time.chrono.IsoChronology;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 
 public class AllyCalendarView extends AllyAbstractCalendarView<DateCell> {
@@ -52,7 +36,7 @@ public class AllyCalendarView extends AllyAbstractCalendarView<DateCell> {
     }
 
     public AllyCalendarView(LocalDate selectedDate) {
-        this.selectedDate = new SimpleObjectProperty<>(selectedDate);
+        this(selectedDate, true);
     }
 
     public AllyCalendarView(LocalDate selectedDate, Boolean showMonthYearPane) {
@@ -102,6 +86,5 @@ public class AllyCalendarView extends AllyAbstractCalendarView<DateCell> {
     protected Skin<?> createDefaultSkin() {
         return new AllyCalendarViewSkin(this);
     }
-
 
 }

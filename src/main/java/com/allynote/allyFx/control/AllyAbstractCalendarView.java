@@ -15,7 +15,6 @@
  */
 package com.allynote.allyFx.control;
 
-import com.allynote.allyFx.skin.FXCalendarViewSkin;
 import com.sun.javafx.css.converters.BooleanConverter;
 import com.sun.javafx.scene.control.skin.resources.ControlResources;
 import javafx.beans.property.BooleanProperty;
@@ -27,8 +26,6 @@ import javafx.css.Styleable;
 import javafx.css.StyleableBooleanProperty;
 import javafx.css.StyleableProperty;
 import javafx.scene.control.Control;
-import javafx.scene.control.DateCell;
-import javafx.scene.control.Skin;
 import javafx.util.Callback;
 
 import java.time.chrono.Chronology;
@@ -133,6 +130,7 @@ public abstract class AllyAbstractCalendarView<T extends Control> extends Contro
         return DEFAULT_STYLE;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -151,14 +149,14 @@ public abstract class AllyAbstractCalendarView<T extends Control> extends Contro
 
                     @Override
                     public StyleableProperty<Boolean> getStyleableProperty(AllyAbstractCalendarView n) {
-                        return (StyleableProperty<Boolean>) (WritableValue<Boolean>) n.showWeekNumbersProperty();
+                        return (StyleableProperty<Boolean>) n.showWeekNumbersProperty();
                     }
                 };
 
         private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
 
         static {
-            final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<CssMetaData<? extends Styleable, ?>>(Control.getClassCssMetaData());
+            final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<>(Control.getClassCssMetaData());
             Collections.addAll(styleables,
                     SHOW_WEEK_NUMBERS
             );

@@ -2,13 +2,11 @@ package com.allynote.allyFx;/**
  * Created by super on 12/15/15.
  */
 
-import com.allynote.allyFx.control.FXCalendarView;
-import com.allynote.allyFx.control.FXMonthView;
+import com.allynote.allyFx.control.AllyCalendarView;
+import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -23,12 +21,11 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
         BorderPane root = new BorderPane();
 
         Pane pane = new Pane();
 
-        FXCalendarView fxMonthView = new FXCalendarView();
+        AllyCalendarView fxMonthView = new AllyCalendarView();
         fxMonthView.setSelectedDate(LocalDate.now());
         fxMonthView.setShowWeekNumbers(true);
         fxMonthView.setShowMonthYearPane(true);
@@ -39,7 +36,7 @@ public class Main extends Application {
 //        pane.getChildren().addAll(fxMonthView, datePicker);
 
         root.setTop(datePicker);
-        root.setCenter(pane);
+        root.setCenter(fxMonthView);
 
         Scene scene = new Scene(root, 600, 400);
 
