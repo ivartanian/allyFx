@@ -15,8 +15,12 @@
  */
 package com.allynote.allyFx.skin;
 
+import com.allynote.allyFx.behavior.AllyCalendarViewBehavior;
+import com.allynote.allyFx.control.AllyCalendarView;
 import com.allynote.allyFx.control.FXCalendarView;
 import com.allynote.allyFx.control.FXMonthView;
+import com.sun.javafx.scene.control.behavior.SliderBehavior;
+import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
 import com.sun.javafx.scene.control.skin.resources.ControlResources;
 import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.tk.Toolkit;
@@ -47,15 +51,13 @@ import java.util.Locale;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoUnit.*;
-import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.YEARS;
 
 /**
  * The default skin for the {@link FXMonthView}.
  * 
  * @author Robert Zenz
  */
-public class FXCalendarViewSkin extends SkinBase<FXCalendarView>
+public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, AllyCalendarViewBehavior>
 {
 
 	public static final double USE_PREF_SIZE = Double.NEGATIVE_INFINITY;
@@ -67,7 +69,7 @@ public class FXCalendarViewSkin extends SkinBase<FXCalendarView>
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	/**
-	 * Creates a new instance of {@link FXCalendarViewSkin}.
+	 * Creates a new instance of {@link AllyCalendarViewSkin}.
 	 *
 	 * @param pControl the control.
 	 */
@@ -107,8 +109,9 @@ public class FXCalendarViewSkin extends SkinBase<FXCalendarView>
 
 
 
-	public FXCalendarViewSkin(final FXCalendarView fxCalendarView) {
-		super(fxCalendarView);
+	public AllyCalendarViewSkin(final AllyCalendarView allyCalendarView) {
+
+		super(allyCalendarView, new AllyCalendarViewBehavior(allyCalendarView));
 
 		vBox = new VBox();
 
@@ -117,7 +120,7 @@ public class FXCalendarViewSkin extends SkinBase<FXCalendarView>
 		daysPerWeek = getDaysPerWeek();
 
 		{
-			LocalDate date = fxCalendarView.getSelectedDate();
+			LocalDate date = allyCalendarView.getSelectedDate();
 			displayedYearMonth.set((date != null) ? YearMonth.from(date) : YearMonth.now());
 		}
 
@@ -125,7 +128,7 @@ public class FXCalendarViewSkin extends SkinBase<FXCalendarView>
 			updateValues();
 		});
 
-		if (fxCalendarView.isShowMonthYearPane()){
+		if (allyCalendarView.isShowMonthYearPane()){
 			vBox.getChildren().add(createMonthYearPane());
 //			getChildren().add(createMonthYearPane());
 		}
@@ -138,7 +141,7 @@ public class FXCalendarViewSkin extends SkinBase<FXCalendarView>
 				// RT-30903: Make sure width snaps to pixel when divided by
 				// number of columns. GridPane doesn't do this with percentage
 				// width constraints. See GridPane.adjustColumnWidths().
-				final int nCols = daysPerWeek + (fxCalendarView.isShowWeekNumbers() ? 1 : 0);
+				final int nCols = daysPerWeek + (allyCalendarView.isShowWeekNumbers() ? 1 : 0);
 				final double snaphgap = snapSpace(getHgap());
 				final double left = snapSpace(getInsets().getLeft());
 				final double right = snapSpace(getInsets().getRight());

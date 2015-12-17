@@ -34,6 +34,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Skin;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import javafx.util.converter.DateTimeStringConverter;
 import javafx.util.converter.LocalDateStringConverter;
 
 import java.time.LocalDate;
@@ -62,12 +63,12 @@ public class FXCalendarView extends Control {
     /**
      * The path to the default style sheet.
      */
-    public static final String DEFAULT_STYLE = "/css/fxmonthview.css";
+    public static final String DEFAULT_STYLE = "/css/fxcalendar.css";
 
     /**
      * The default class name used for styling.
      */
-    public static final String DEFAULT_STYLE_CLASS = "monthview";
+    public static final String DEFAULT_STYLE_CLASS = "date-picker-popup";
 
     /**
      * The property for the selected date.
@@ -77,7 +78,7 @@ public class FXCalendarView extends Control {
     /**
      * The property for the currently visible month.
      */
-//    private ObjectProperty<LocalDate> visibleMonth;
+    private ObjectProperty<LocalDate> visibleMonth;
 
     private BooleanProperty showMonthYearPane;
 
@@ -176,8 +177,8 @@ public class FXCalendarView extends Control {
     }
 
     // Create a symmetric (format/parse) converter with the default locale.
-    private StringConverter<LocalDate> defaultConverter =
-            new LocalDateStringConverter(FormatStyle.SHORT, null, getChronology());
+//    private StringConverter<LocalDate> defaultConverter = new LocalDateStringConverter(FormatStyle.SHORT, null, getChronology());
+    private StringConverter<LocalDate> defaultConverter = null;
 
 
     private static class StyleableProperties {
@@ -250,6 +251,7 @@ public class FXCalendarView extends Control {
         return new FXCalendarViewSkin(this);
     }
 
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // User-defined methods
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -269,9 +271,9 @@ public class FXCalendarView extends Control {
      *
      * @return the currently visible month.
      */
-//    public LocalDate getVisibleMonth() {
-//        return visibleMonth.get();
-//    }
+    public LocalDate getVisibleMonth() {
+        return visibleMonth.get();
+    }
 
     /**
      * Gets the property for the currently selected {@link LocalDate}.
@@ -297,17 +299,17 @@ public class FXCalendarView extends Control {
      *
      * @param pVisibleMonth the currently visible month.
      */
-//    public void setVisibleMonth(LocalDate pVisibleMonth) {
-//        visibleMonth.set(pVisibleMonth);
-//    }
-//
-//    /**
-//     * Gets the property for the currently visible month.
-//     *
-//     * @return the property for the currently visible month.
-//     */
-//    public ObjectProperty<LocalDate> visibleMonthProperty() {
-//        return visibleMonth;
-//    }
+    public void setVisibleMonth(LocalDate pVisibleMonth) {
+        visibleMonth.set(pVisibleMonth);
+    }
+
+    /**
+     * Gets the property for the currently visible month.
+     *
+     * @return the property for the currently visible month.
+     */
+    public ObjectProperty<LocalDate> visibleMonthProperty() {
+        return visibleMonth;
+    }
 
 }    // FXMonthView
