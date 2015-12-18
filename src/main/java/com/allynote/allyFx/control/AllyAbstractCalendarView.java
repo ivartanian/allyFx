@@ -43,7 +43,7 @@ public abstract class AllyAbstractCalendarView<T extends Control> extends Contro
     /**
      * The default class name used for styling.
      */
-    private static final String DEFAULT_STYLE_CLASS = "ally-calendar";
+    private static final String DEFAULT_STYLE_CLASS = "ally-calendar-view";
 
     public final BooleanProperty showWeekNumbersProperty() {
         if (showWeekNumbers == null) {
@@ -163,6 +163,5 @@ public abstract class AllyAbstractCalendarView<T extends Control> extends Contro
             STYLEABLES = Collections.unmodifiableList(styleables);
         }
     }
-
 
 }

@@ -17,6 +17,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -37,134 +38,140 @@ import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoUnit.*;
 
 
-public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, AllyCalendarViewBehavior>
-{
+public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, AllyCalendarViewBehavior> {
 
-	public static final double USE_PREF_SIZE = Double.NEGATIVE_INFINITY;
+    private VBox vBox;
 
-	private VBox vBox;
+    private Button backMonthButton;
+    private Button forwardMonthButton;
+    private Button backYearButton;
+    private Button forwardYearButton;
+    private Label monthLabel;
+    private Label yearLabel;
+    protected GridPane gridPane;
 
-	private Button backMonthButton;
-	private Button forwardMonthButton;
-	private Button backYearButton;
-	private Button forwardYearButton;
-	private Label monthLabel;
-	private Label yearLabel;
-	protected GridPane gridPane;
+    private int daysPerWeek;
+    private List<DateCell> dayNameCells = new ArrayList<>();
+    private List<DateCell> weekNumberCells = new ArrayList<>();
+    protected List<DateCell> dayCells = new ArrayList<>();
+    private LocalDate[] dayCellDates;
+    private DateCell lastFocusedDayCell = null;
 
-	private int daysPerWeek;
-	private List<DateCell> dayNameCells = new ArrayList<>();
-	private List<DateCell> weekNumberCells = new ArrayList<>();
-	protected List<DateCell> dayCells = new ArrayList<>();
-	private LocalDate[] dayCellDates;
-	private DateCell lastFocusedDayCell = null;
+    private ObjectProperty<YearMonth> displayedYearMonth = new SimpleObjectProperty<>(this, "displayedYearMonth");
 
-    private ObjectProperty<YearMonth> displayedYearMonth = new SimpleObjectProperty<YearMonth>(this, "displayedYearMonth");
     public ObjectProperty<YearMonth> displayedYearMonthProperty() {
         return displayedYearMonth;
     }
 
     final DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM");
 
-	final DateTimeFormatter monthFormatterSO = DateTimeFormatter.ofPattern("LLLL"); // Standalone month name
+    final DateTimeFormatter monthFormatterSO = DateTimeFormatter.ofPattern("LLLL"); // Standalone month name
 
-	final DateTimeFormatter yearFormatter = DateTimeFormatter.ofPattern("y");
+    final DateTimeFormatter yearFormatter = DateTimeFormatter.ofPattern("y");
 
-	final DateTimeFormatter yearWithEraFormatter = DateTimeFormatter.ofPattern("GGGGy"); // For Japanese. What to use for others??
+    final DateTimeFormatter yearWithEraFormatter = DateTimeFormatter.ofPattern("GGGGy"); // For Japanese. What to use for others??
 
-	final DateTimeFormatter weekNumberFormatter = DateTimeFormatter.ofPattern("w");
+    final DateTimeFormatter weekNumberFormatter = DateTimeFormatter.ofPattern("w");
 
-	final DateTimeFormatter weekDayNameFormatter = DateTimeFormatter.ofPattern("ccc"); // Standalone day name
+    final DateTimeFormatter weekDayNameFormatter = DateTimeFormatter.ofPattern("ccc"); // Standalone day name
 
-	final DateTimeFormatter dayCellFormatter = DateTimeFormatter.ofPattern("d");
+    final DateTimeFormatter dayCellFormatter = DateTimeFormatter.ofPattern("d");
 
-//	public String getString(String key) {
-//		return ControlResources.getString("DatePicker." + key);
-//	}
+    public AllyCalendarViewSkin(final AllyCalendarView allyCalendarView) {
 
+        super(allyCalendarView, new AllyCalendarViewBehavior(allyCalendarView));
 
+        vBox = new VBox();
 
-	public AllyCalendarViewSkin(final AllyCalendarView allyCalendarView) {
+        vBox.getStyleClass().add("ally-calendar-view");
 
-		super(allyCalendarView, new AllyCalendarViewBehavior(allyCalendarView));
+        daysPerWeek = getDaysPerWeek();
 
-		vBox = new VBox();
+        {
+            LocalDate date = allyCalendarView.getSelectedDate();
+            displayedYearMonth.set((date != null) ? YearMonth.from(date) : YearMonth.now());
+        }
 
-		vBox.getStyleClass().add("ally-calendar");
+        displayedYearMonth.addListener((observable, oldValue, newValue) -> {
+            updateValues();
+        });
 
-		daysPerWeek = getDaysPerWeek();
+        if (allyCalendarView.isShowMonthYearPane()) {
+            vBox.getChildren().add(createMonthYearPane());
+        }
 
-		{
-			LocalDate date = allyCalendarView.getSelectedDate();
-			displayedYearMonth.set((date != null) ? YearMonth.from(date) : YearMonth.now());
-		}
+        gridPane = new GridPane()
+        {
+			@Override
+			protected double computePrefWidth(double height) {
+				final double width = super.computePrefWidth(height);
 
-		displayedYearMonth.addListener((observable, oldValue, newValue) -> {
-			updateValues();
-		});
+				// RT-30903: Make sure width snaps to pixel when divided by
+				// number of columns. GridPane doesn't do this with percentage
+				// width constraints. See GridPane.adjustColumnWidths().
+				final int nCols = daysPerWeek + (allyCalendarView.isShowWeekNumbers() ? 1 : 0);
+				final double snaphgap = snapSpace(getHgap());
+				final double left = snapSpace(getInsets().getLeft());
+				final double right = snapSpace(getInsets().getRight());
+				final double hgaps = snaphgap * (nCols - 1);
+				final double contentWidth = width - left - right - hgaps;
+				return ((snapSize(contentWidth / nCols)) * nCols) + left + right + hgaps;
+			}
 
-		if (allyCalendarView.isShowMonthYearPane()){
-			vBox.getChildren().add(createMonthYearPane());
-		}
+            @Override
+            protected double computePrefHeight(double width) {
+                final double height = super.computePrefHeight(width);
 
-		gridPane = new GridPane();
-//        {
-//			@Override
-//			protected double computePrefWidth(double height) {
-//				final double width = super.computePrefWidth(height);
-//
-//				// RT-30903: Make sure width snaps to pixel when divided by
-//				// number of columns. GridPane doesn't do this with percentage
-//				// width constraints. See GridPane.adjustColumnWidths().
-//				final int nCols = daysPerWeek + (allyCalendarView.isShowWeekNumbers() ? 1 : 0);
-//				final double snaphgap = snapSpace(getHgap());
-//				final double left = snapSpace(getInsets().getLeft());
-//				final double right = snapSpace(getInsets().getRight());
-//				final double hgaps = snaphgap * (nCols - 1);
-//				final double contentWidth = width - left - right - hgaps;
-//				return ((snapSize(contentWidth / nCols)) * nCols) + left + right + hgaps;
-//			}
-//
-//			@Override
-//			protected void layoutChildren() {
-//				// Prevent AssertionError in GridPane
-//				if (getWidth() > 0 && getHeight() > 0) {
-//					super.layoutChildren();
-//				}
-//			}
-//		};
+                final int nRows = 6 + 1 + (allyCalendarView.isShowMonthYearPane() ? 1 : 0);
+                final double snapvgap = snapSpace(getVgap());
+                final double top = snapSpace(getInsets().getTop());
+                final double bottom = snapSpace(getInsets().getBottom());
+                final double vgaps = snapvgap * (nRows - 1);
+                final double contentHeight = height - top - bottom - vgaps;
+                return ((snapSize(contentHeight / nRows)) * nRows) + top + bottom + vgaps;
+
+            }
+
+            @Override
+			protected void layoutChildren() {
+				// Prevent AssertionError in GridPane
+				if (getWidth() > 0 && getHeight() > 0) {
+					super.layoutChildren();
+				}
+			}
+		};
 
 //		gridPane.setFocusTraversable(true);
-		gridPane.getStyleClass().add("calendar-grid");
-		gridPane.setVgap(-1);
-		gridPane.setHgap(-1);
+        gridPane.getStyleClass().add("calendar-grid");
+        gridPane.setVgap(-1);
+        gridPane.setHgap(-1);
 
 
-		// get the weekday labels starting with the weekday that is the
-		// first-day-of-the-week according to the locale in the
-		// displayed LocalDate
-		for (int i = 0; i < daysPerWeek; i++) {
-			DateCell cell = new DateCell();
-			cell.getStyleClass().add("day-name-cell");
-			dayNameCells.add(cell);
-		}
+        // get the weekday labels starting with the weekday that is the
+        // first-day-of-the-week according to the locale in the
+        // displayed LocalDate
+        for (int i = 0; i < daysPerWeek; i++) {
+            DateCell cell = new DateCell();
+            cell.getStyleClass().add("day-name-cell");
+            dayNameCells.add(cell);
+        }
 
-		// Week number column
-		for (int i = 0; i < 6; i++) {
-			DateCell cell = new DateCell();
-			cell.getStyleClass().add("week-number-cell");
-			weekNumberCells.add(cell);
-		}
+        // Week number column
+        for (int i = 0; i < 6; i++) {
+            DateCell cell = new DateCell();
+            cell.getStyleClass().add("week-number-cell");
+            weekNumberCells.add(cell);
+        }
 
-		createDayCells();
-		updateGrid();
+        createDayCells();
+        updateGrid();
 
-		vBox.getChildren().add(gridPane);
-		getChildren().add(vBox);
+        vBox.getChildren().add(gridPane);
+        getChildren().add(vBox);
 
-		refresh();
+        refresh();
 
-	}
+    }
 
     private int getDaysPerWeek() {
         ValueRange range = getPrimaryChronology().range(DAY_OF_WEEK);
@@ -176,7 +183,7 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
         // updateDayCells before updateMonthYearPane().
         updateWeeknumberDateCells();
         updateDayCells();
-        if (getSkinnable().isShowMonthYearPane()){
+        if (getSkinnable().isShowMonthYearPane()) {
             updateMonthYearPane();
         }
     }
@@ -192,8 +199,8 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
                 // Use a formatter to ensure correct localization,
                 // such as when Thai numerals are required.
                 String cellText = weekNumberFormatter.withLocale(locale)
-                                .withDecimalStyle(DecimalStyle.of(locale))
-                                .format(date);
+                        .withDecimalStyle(DecimalStyle.of(locale))
+                        .format(date);
                 weekNumberCells.get(i).setText(cellText);
             }
         }
@@ -262,9 +269,9 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
                 }
 
                 String cellText = dayCellFormatter.withLocale(locale)
-                                .withChronology(chrono)
-                                .withDecimalStyle(DecimalStyle.of(locale))
-                                .format(cDate);
+                        .withChronology(chrono)
+                        .withDecimalStyle(DecimalStyle.of(locale))
+                        .format(cDate);
                 dayCell.setText(cellText);
 
                 dayCell.updateItem(date, false);
@@ -301,7 +308,7 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
             lastFocusedDayCell = dayCell;
         };
 
-//        getSkinnable().selectedDateProperty().addListener(this::onSelectedDateChanged);
+        getSkinnable().selectedDateProperty().addListener(this::onSelectedDateChanged);
 
         for (int row = 0; row < 6; row++) {
             for (int col = 0; col < daysPerWeek; col++) {
@@ -377,310 +384,280 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
         updateValues();
     }
 
+    private void updateMonthLabelWidth() {
+        if (monthLabel != null) {
+            int monthsPerYear = getMonthsPerYear();
+            double width = 0;
+            for (int i = 0; i < monthsPerYear; i++) {
+                YearMonth yearMonth = displayedYearMonth.get().withMonth(i + 1);
+                String name = monthFormatterSO.withLocale(getLocale()).format(yearMonth);
+                if (Character.isDigit(name.charAt(0))) {
+                    // Fallback. The standalone format returned a number, so use standard format instead.
+                    name = monthFormatter.withLocale(getLocale()).format(yearMonth);
+                }
+                width = Math.max(width, computeTextWidth(monthLabel.getFont(), name, 0));
+            }
+            monthLabel.setMinWidth(width);
+        }
+    }
 
+    private int getMonthsPerYear() {
+        ValueRange range = getPrimaryChronology().range(MONTH_OF_YEAR);
+        return (int) (range.getMaximum() - range.getMinimum() + 1);
+    }
 
+    public double computeTextWidth(Font font, String text, double wrappingWidth) {
+        Text layout = new Text(text != null ? text : "");
+        layout.setWrappingWidth(wrappingWidth);
+        layout.setFont(font);
 
+        return layout.getLayoutBounds().getWidth();
+    }
 
+    void updateDayNameCells() {
+        // first day of week, 1 = monday, 7 = sunday
+        int firstDayOfWeek = WeekFields.of(getLocale()).getFirstDayOfWeek().getValue();
 
-
-
-
-
-
-
-
-
+        // july 13th 2009 is a Monday, so a firstDayOfWeek=1 must come out of the 13th
+        LocalDate date = LocalDate.of(2009, 7, 12 + firstDayOfWeek);
+        for (int i = 0; i < daysPerWeek; i++) {
+            String name = weekDayNameFormatter.withLocale(getLocale()).format(date.plus(i, DAYS));
+            dayNameCells.get(i).setText(titleCaseWord(name));
+        }
+    }
 
     protected BorderPane createMonthYearPane() {
-		BorderPane monthYearPane = new BorderPane();
-		monthYearPane.getStyleClass().add("month-year-pane");
+        BorderPane monthYearPane = new BorderPane();
+        monthYearPane.getStyleClass().add("month-year-pane");
 
-		// Month spinner
+        // Month spinner
 
-		HBox monthSpinner = new HBox();
-		monthSpinner.getStyleClass().add("spinner");
+        HBox monthSpinner = new HBox();
+        monthSpinner.getStyleClass().add("spinner");
 
-		backMonthButton = new Button();
-		backMonthButton.getStyleClass().add("left-button");
+        backMonthButton = new Button();
+        backMonthButton.getStyleClass().add("left-button");
 
-		forwardMonthButton = new Button();
-		forwardMonthButton.getStyleClass().add("right-button");
+        forwardMonthButton = new Button();
+        forwardMonthButton.getStyleClass().add("right-button");
 
-		StackPane leftMonthArrow = new StackPane();
-		leftMonthArrow.getStyleClass().add("left-arrow");
-		leftMonthArrow.setMaxSize(USE_PREF_SIZE, USE_PREF_SIZE);
-		backMonthButton.setGraphic(leftMonthArrow);
+        StackPane leftMonthArrow = new StackPane();
+        leftMonthArrow.getStyleClass().add("left-arrow");
+        leftMonthArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        backMonthButton.setGraphic(leftMonthArrow);
 
-		StackPane rightMonthArrow = new StackPane();
-		rightMonthArrow.getStyleClass().add("right-arrow");
-		rightMonthArrow.setMaxSize(USE_PREF_SIZE, USE_PREF_SIZE);
-		forwardMonthButton.setGraphic(rightMonthArrow);
-
-
-		backMonthButton.setOnAction(t -> {
-			forward(-1, MONTHS, false);
-		});
-
-		monthLabel = new Label();
-		monthLabel.getStyleClass().add("spinner-label");
-
-		forwardMonthButton.setOnAction(t -> {
-			forward(1, MONTHS, false);
-		});
-
-		monthSpinner.getChildren().addAll(backMonthButton, monthLabel, forwardMonthButton);
-		monthYearPane.setLeft(monthSpinner);
-
-		// Year spinner
-
-		HBox yearSpinner = new HBox();
-		yearSpinner.getStyleClass().add("spinner");
-
-		backYearButton = new Button();
-		backYearButton.getStyleClass().add("left-button");
-
-		forwardYearButton = new Button();
-		forwardYearButton.getStyleClass().add("right-button");
-
-		StackPane leftYearArrow = new StackPane();
-		leftYearArrow.getStyleClass().add("left-arrow");
-		leftYearArrow.setMaxSize(USE_PREF_SIZE, USE_PREF_SIZE);
-		backYearButton.setGraphic(leftYearArrow);
-
-		StackPane rightYearArrow = new StackPane();
-		rightYearArrow.getStyleClass().add("right-arrow");
-		rightYearArrow.setMaxSize(USE_PREF_SIZE, USE_PREF_SIZE);
-		forwardYearButton.setGraphic(rightYearArrow);
+        StackPane rightMonthArrow = new StackPane();
+        rightMonthArrow.getStyleClass().add("right-arrow");
+        rightMonthArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        forwardMonthButton.setGraphic(rightMonthArrow);
 
 
-		backYearButton.setOnAction(t -> {
-			forward(-1, YEARS, false);
-		});
+        backMonthButton.setOnAction(t -> {
+            forward(-1, MONTHS, false);
+        });
 
-		yearLabel = new Label();
-		yearLabel.getStyleClass().add("spinner-label");
+        monthLabel = new Label();
+        monthLabel.getStyleClass().add("spinner-label");
 
-		forwardYearButton.setOnAction(t -> {
-			forward(1, YEARS, false);
-		});
+        forwardMonthButton.setOnAction(t -> {
+            forward(1, MONTHS, false);
+        });
 
-		yearSpinner.getChildren().addAll(backYearButton, yearLabel, forwardYearButton);
-		yearSpinner.setFillHeight(false);
-		monthYearPane.setRight(yearSpinner);
+        monthSpinner.getChildren().addAll(backMonthButton, monthLabel, forwardMonthButton);
+        monthYearPane.setLeft(monthSpinner);
 
-		return monthYearPane;
-	}
+        // Year spinner
 
-	void updateDayNameCells() {
-		// first day of week, 1 = monday, 7 = sunday
-		int firstDayOfWeek = WeekFields.of(getLocale()).getFirstDayOfWeek().getValue();
+        HBox yearSpinner = new HBox();
+        yearSpinner.getStyleClass().add("spinner");
 
-		// july 13th 2009 is a Monday, so a firstDayOfWeek=1 must come out of the 13th
-		LocalDate date = LocalDate.of(2009, 7, 12 + firstDayOfWeek);
-		for (int i = 0; i < daysPerWeek; i++) {
-			String name = weekDayNameFormatter.withLocale(getLocale()).format(date.plus(i, DAYS));
-			dayNameCells.get(i).setText(titleCaseWord(name));
-		}
-	}
+        backYearButton = new Button();
+        backYearButton.getStyleClass().add("left-button");
 
-	private int getMonthsPerYear() {
-		ValueRange range = getPrimaryChronology().range(MONTH_OF_YEAR);
-		return (int) (range.getMaximum() - range.getMinimum() + 1);
-	}
+        forwardYearButton = new Button();
+        forwardYearButton.getStyleClass().add("right-button");
 
-	private void updateMonthLabelWidth() {
-		if (monthLabel != null) {
-			int monthsPerYear = getMonthsPerYear();
-			double width = 0;
-			for (int i = 0; i < monthsPerYear; i++) {
-				YearMonth yearMonth = displayedYearMonth.get().withMonth(i + 1);
-				String name = monthFormatterSO.withLocale(getLocale()).format(yearMonth);
-				if (Character.isDigit(name.charAt(0))) {
-					// Fallback. The standalone format returned a number, so use standard format instead.
-					name = monthFormatter.withLocale(getLocale()).format(yearMonth);
-				}
-				width = Math.max(width, computeTextWidth(monthLabel.getFont(), name, 0));
-			}
-			monthLabel.setMinWidth(width);
-		}
-	}
+        StackPane leftYearArrow = new StackPane();
+        leftYearArrow.getStyleClass().add("left-arrow");
+        leftYearArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        backYearButton.setGraphic(leftYearArrow);
 
-	protected void updateMonthYearPane() {
-		YearMonth yearMonth = displayedYearMonth.get();
-		String str = formatMonth(yearMonth);
-		monthLabel.setText(str);
+        StackPane rightYearArrow = new StackPane();
+        rightYearArrow.getStyleClass().add("right-arrow");
+        rightYearArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        forwardYearButton.setGraphic(rightYearArrow);
 
-		str = formatYear(yearMonth);
-		yearLabel.setText(str);
-		double width = computeTextWidth(yearLabel.getFont(), str, 0);
-		if (width > yearLabel.getMinWidth()) {
-			yearLabel.setMinWidth(width);
-		}
 
-		Chronology chrono = getSkinnable().getChronology();
-		LocalDate firstDayOfMonth = yearMonth.atDay(1);
-		backMonthButton.setDisable(!isValidDate(chrono, firstDayOfMonth, -1, DAYS));
-		forwardMonthButton.setDisable(!isValidDate(chrono, firstDayOfMonth, +1, MONTHS));
-		backYearButton.setDisable(!isValidDate(chrono, firstDayOfMonth, -1, YEARS));
-		forwardYearButton.setDisable(!isValidDate(chrono, firstDayOfMonth, +1, YEARS));
-	}
+        backYearButton.setOnAction(t -> {
+            forward(-1, YEARS, false);
+        });
 
-	private String formatMonth(YearMonth yearMonth) {
-		Locale locale = getLocale();
-		Chronology chrono = getPrimaryChronology();
-		try {
-			ChronoLocalDate cDate = chrono.date(yearMonth.atDay(1));
+        yearLabel = new Label();
+        yearLabel.getStyleClass().add("spinner-label");
 
-			String str = monthFormatterSO.withLocale(getLocale())
-					.withChronology(chrono)
-					.format(cDate);
-			if (Character.isDigit(str.charAt(0))) {
-				// Fallback. The standalone format returned a number, so use standard format instead.
-				str = monthFormatter.withLocale(getLocale())
-						.withChronology(chrono)
-						.format(cDate);
-			}
-			return titleCaseWord(str);
-		} catch (DateTimeException ex) {
-			// Date is out of range.
-			return "";
-		}
-	}
+        forwardYearButton.setOnAction(t -> {
+            forward(1, YEARS, false);
+        });
 
-	private String formatYear(YearMonth yearMonth) {
-		Locale locale = getLocale();
-		Chronology chrono = getPrimaryChronology();
-		try {
-			DateTimeFormatter formatter = yearFormatter;
-			ChronoLocalDate cDate = chrono.date(yearMonth.atDay(1));
-			int era = cDate.getEra().getValue();
-			int nEras = chrono.eras().size();
+        yearSpinner.getChildren().addAll(backYearButton, yearLabel, forwardYearButton);
+        yearSpinner.setFillHeight(false);
+        monthYearPane.setRight(yearSpinner);
+
+        return monthYearPane;
+    }
+
+    protected void forward(int offset, ChronoUnit unit, boolean focusDayCell) {
+        YearMonth yearMonth = displayedYearMonth.get();
+        DateCell dateCell = lastFocusedDayCell;
+        if (dateCell == null || !dayCellDate(dateCell).getMonth().equals(yearMonth.getMonth())) {
+            dateCell = findDayCellForDate(yearMonth.atDay(1));
+        }
+        goToDayCell(dateCell, offset, unit, focusDayCell);
+    }
+
+    private DateCell findDayCellForDate(LocalDate date) {
+        for (int i = 0; i < dayCellDates.length; i++) {
+            if (date.equals(dayCellDates[i])) {
+                return dayCells.get(i);
+            }
+        }
+        return dayCells.get(dayCells.size() / 2 + 1);
+    }
+
+    // public for behavior class
+    public void goToDayCell(DateCell dateCell, int offset, ChronoUnit unit, boolean focusDayCell) {
+        goToDate(dayCellDate(dateCell).plus(offset, unit), focusDayCell);
+    }
+
+    // public for behavior class
+    public void goToDate(LocalDate date, boolean focusDayCell) {
+        if (isValidDate(getSkinnable().getChronology(), date)) {
+            displayedYearMonth.set(YearMonth.from(date));
+            if (focusDayCell) {
+                findDayCellForDate(date).requestFocus();
+            }
+        }
+    }
+
+    protected boolean isValidDate(Chronology chrono, LocalDate date) {
+        try {
+            if (date != null) {
+                chrono.date(date);
+            }
+            return true;
+        } catch (DateTimeException ex) {
+            return false;
+        }
+    }
+
+    protected boolean isValidDate(Chronology chrono, LocalDate date, int offset, ChronoUnit unit) {
+        if (date != null) {
+            try {
+                return isValidDate(chrono, date.plus(offset, unit));
+            } catch (DateTimeException ex) {
+            }
+        }
+        return false;
+    }
+
+    protected void updateMonthYearPane() {
+        YearMonth yearMonth = displayedYearMonth.get();
+        String str = formatMonth(yearMonth);
+        monthLabel.setText(str);
+
+        str = formatYear(yearMonth);
+        yearLabel.setText(str);
+        double width = computeTextWidth(yearLabel.getFont(), str, 0);
+        if (width > yearLabel.getMinWidth()) {
+            yearLabel.setMinWidth(width);
+        }
+
+        Chronology chrono = getSkinnable().getChronology();
+        LocalDate firstDayOfMonth = yearMonth.atDay(1);
+        backMonthButton.setDisable(!isValidDate(chrono, firstDayOfMonth, -1, DAYS));
+        forwardMonthButton.setDisable(!isValidDate(chrono, firstDayOfMonth, +1, MONTHS));
+        backYearButton.setDisable(!isValidDate(chrono, firstDayOfMonth, -1, YEARS));
+        forwardYearButton.setDisable(!isValidDate(chrono, firstDayOfMonth, +1, YEARS));
+    }
+
+    private String formatMonth(YearMonth yearMonth) {
+        Locale locale = getLocale();
+        Chronology chrono = getPrimaryChronology();
+        try {
+            ChronoLocalDate cDate = chrono.date(yearMonth.atDay(1));
+
+            String str = monthFormatterSO.withLocale(getLocale())
+                    .withChronology(chrono)
+                    .format(cDate);
+            if (Character.isDigit(str.charAt(0))) {
+                // Fallback. The standalone format returned a number, so use standard format instead.
+                str = monthFormatter.withLocale(getLocale())
+                        .withChronology(chrono)
+                        .format(cDate);
+            }
+            return titleCaseWord(str);
+        } catch (DateTimeException ex) {
+            // Date is out of range.
+            return "";
+        }
+    }
+
+    private String formatYear(YearMonth yearMonth) {
+        Locale locale = getLocale();
+        Chronology chrono = getPrimaryChronology();
+        try {
+            DateTimeFormatter formatter = yearFormatter;
+            ChronoLocalDate cDate = chrono.date(yearMonth.atDay(1));
+            int era = cDate.getEra().getValue();
+            int nEras = chrono.eras().size();
 
             /*if (cDate.get(YEAR) < 0) {
                 formatter = yearForNegYearFormatter;
             } else */
-			if ((nEras == 2 && era == 0) || nEras > 2) {
-				formatter = yearWithEraFormatter;
-			}
+            if ((nEras == 2 && era == 0) || nEras > 2) {
+                formatter = yearWithEraFormatter;
+            }
 
-			// Fixme: Format Japanese era names with Japanese text.
-			String str = formatter.withLocale(getLocale())
-					.withChronology(chrono)
-					.withDecimalStyle(DecimalStyle.of(getLocale()))
-					.format(cDate);
+            // Fixme: Format Japanese era names with Japanese text.
+            String str = formatter.withLocale(getLocale())
+                    .withChronology(chrono)
+                    .withDecimalStyle(DecimalStyle.of(getLocale()))
+                    .format(cDate);
 
-			return str;
-		} catch (DateTimeException ex) {
-			// Date is out of range.
-			return "";
-		}
-	}
+            return str;
+        } catch (DateTimeException ex) {
+            // Date is out of range.
+            return "";
+        }
+    }
 
-	// Ensures that month and day names are titlecased (capitalized).
-	private String titleCaseWord(String str) {
-		if (str.length() > 0) {
-			int firstChar = str.codePointAt(0);
-			if (!Character.isTitleCase(firstChar)) {
-				str = new String(new int[]{Character.toTitleCase(firstChar)}, 0, 1) +
-						str.substring(Character.offsetByCodePoints(str, 0, 1));
-			}
-		}
-		return str;
-	}
+    protected Locale getLocale() {
+        return Locale.getDefault(Locale.Category.FORMAT);
+    }
 
-	// public for behavior class
-	public void goToDayCell(DateCell dateCell, int offset, ChronoUnit unit, boolean focusDayCell) {
-		goToDate(dayCellDate(dateCell).plus(offset, unit), focusDayCell);
-	}
+    protected Chronology getPrimaryChronology() {
+        return getSkinnable().getChronology();
+    }
 
-	protected void forward(int offset, ChronoUnit unit, boolean focusDayCell) {
-		YearMonth yearMonth = displayedYearMonth.get();
-		DateCell dateCell = lastFocusedDayCell;
-		if (dateCell == null || !dayCellDate(dateCell).getMonth().equals(yearMonth.getMonth())) {
-			dateCell = findDayCellForDate(yearMonth.atDay(1));
-		}
-		goToDayCell(dateCell, offset, unit, focusDayCell);
-	}
+    // Ensures that month and day names are titlecased (capitalized).
+    private String titleCaseWord(String str) {
+        if (str.length() > 0) {
+            int firstChar = str.codePointAt(0);
+            if (!Character.isTitleCase(firstChar)) {
+                str = new String(new int[]{Character.toTitleCase(firstChar)}, 0, 1) +
+                        str.substring(Character.offsetByCodePoints(str, 0, 1));
+            }
+        }
+        return str;
+    }
 
-	// public for behavior class
-	public void goToDate(LocalDate date, boolean focusDayCell) {
-		if (isValidDate(getSkinnable().getChronology(), date)) {
-			displayedYearMonth.set(YearMonth.from(date));
-			if (focusDayCell) {
-				findDayCellForDate(date).requestFocus();
-			}
-		}
-	}
+    private void onSelectedDateChanged(ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) {
+        if (newValue != null) {
+            getSkinnable().setSelectedDate(newValue);
+            goToDate(newValue, true);
+            updateValues();
+        }
 
-	private DateCell findDayCellForDate(LocalDate date) {
-		for (int i = 0; i < dayCellDates.length; i++) {
-			if (date.equals(dayCellDates[i])) {
-				return dayCells.get(i);
-			}
-		}
-		return dayCells.get(dayCells.size() / 2 + 1);
-	}
-
-	protected Locale getLocale() {
-		return Locale.getDefault(Locale.Category.FORMAT);
-	}
-
-	/**
-	 * The primary chronology for display. This may be overridden to
-	 * be different than the DatePicker chronology. For example
-	 * DatePickerHijrahContent uses ISO as primary and Hijrah as a
-	 * secondary chronology.
-	 */
-	protected Chronology getPrimaryChronology() {
-		return getSkinnable().getChronology();
-	}
-
-	protected boolean isValidDate(Chronology chrono, LocalDate date, int offset, ChronoUnit unit) {
-		if (date != null) {
-			try {
-				return isValidDate(chrono, date.plus(offset, unit));
-			} catch (DateTimeException ex) {
-			}
-		}
-		return false;
-	}
-
-	protected boolean isValidDate(Chronology chrono, LocalDate date) {
-		try {
-			if (date != null) {
-				chrono.date(date);
-			}
-			return true;
-		} catch (DateTimeException ex) {
-			return false;
-		}
-	}
-
-	public double computeTextWidth(Font font, String text, double wrappingWidth) {
-		final TextLayout layout = Toolkit.getToolkit().getTextLayoutFactory().createLayout();
-		layout.setContent(text != null ? text : "", font.impl_getNativeFont());
-		layout.setWrapWidth((float) wrappingWidth);
-		return layout.getBounds().getWidth();
-	}
-
-	private void onSelectedDateChanged(ObservableValue<? extends LocalDate> pObservable, LocalDate pOldValue, LocalDate pNewValue)
-	{
-		if (pNewValue != null) {
-//            if (pOldValue == null || pOldValue.getMonth() != pNewValue.getMonth() || pOldValue.getYear() != pNewValue.getYear())
-//            {
-
-			YearMonth yearMonth = displayedYearMonth.get();
-			DateCell dateCell = lastFocusedDayCell;
-			if (dateCell == null || !dayCellDate(dateCell).getMonth().equals(yearMonth.getMonth())) {
-				dateCell = findDayCellForDate(yearMonth.atDay(1));
-			}
-
-			goToDate(pNewValue, true);
-			getSkinnable().setSelectedDate(pNewValue);
-//            }
-		}
-
-	}
-
+    }
 
 }

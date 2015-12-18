@@ -13,10 +13,14 @@ import java.util.List;
  */
 public class AllyCalendarViewBehavior extends BehaviorBase<AllyCalendarView> {
 
-    protected static final List<KeyBinding> LIST_VIEW_BINDINGS = new ArrayList<KeyBinding>();
+    protected static final List<KeyBinding> LIST_VIEW_BINDINGS = new ArrayList<>();
+
+    public AllyCalendarViewBehavior(AllyCalendarView control, List<KeyBinding> keyBindings) {
+        super(control, keyBindings);
+    }
 
     public AllyCalendarViewBehavior(AllyCalendarView control) {
-        super(control, LIST_VIEW_BINDINGS);
+        this(control, LIST_VIEW_BINDINGS);
     }
 
 }
