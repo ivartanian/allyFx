@@ -27,7 +27,7 @@ public class Main extends Application {
         pane.getChildren().addAll(fxMonthView);
 
         DatePicker datePicker = new DatePicker();
-        fxMonthView.selectedDateProperty().bindBidirectional(datePicker.valueProperty());
+        fxMonthView.selectedValueProperty().bindBidirectional(datePicker.valueProperty());
 //        pane.getChildren().addAll(fxMonthView, datePicker);
 
         root.setTop(datePicker);

@@ -16,7 +16,7 @@
     -fx-alignment: CENTER; /* VBox */
     -fx-spacing: 0; /* VBox */
     -fx-padding: 0.083333em; /* 1 1 1 1 */
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 12, 0.0 , 0 , 8 );
+    /*-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 12, 0.0 , 0 , 8 );*/
 }
 .ally-calendar-view > .month-year-pane {
     -fx-padding: 0.588883em 0.5em 0.666667em 0.5em; /* 7 6 8 6 */
