@@ -3,9 +3,6 @@ package com.allynote.allyFx.skin;
 import com.allynote.allyFx.behavior.AllyCalendarViewBehavior;
 import com.allynote.allyFx.control.AllyCalendarView;
 import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
-import com.sun.javafx.scene.control.skin.resources.ControlResources;
-import com.sun.javafx.scene.text.TextLayout;
-import com.sun.javafx.tk.Toolkit;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -145,6 +142,7 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
         gridPane.getStyleClass().add("calendar-grid");
         gridPane.setVgap(-1);
         gridPane.setHgap(-1);
+        gridPane.prefHeightProperty().bind(vBox.heightProperty());
 
 
         // get the weekday labels starting with the weekday that is the
@@ -158,7 +156,7 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
 
         // Week number column
         for (int i = 0; i < 6; i++) {
-            DateCell cell = new DateCell();
+            DateCell cell = getNewDateCell();
             cell.getStyleClass().add("week-number-cell");
             weekNumberCells.add(cell);
         }
@@ -332,9 +330,15 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
             cell = getSkinnable().getDayCellFactory().call(getSkinnable());
         }
         if (cell == null) {
-            cell = new DateCell();
+            cell = getNewDateCell();
         }
 
+        return cell;
+    }
+
+    private DateCell getNewDateCell() {
+        DateCell cell = new DateCell();
+        cell.setMaxHeight(Double.MAX_VALUE);
         return cell;
     }
 
@@ -349,6 +353,7 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
 
     void updateGrid() {
         gridPane.getColumnConstraints().clear();
+        gridPane.getRowConstraints().clear();
         gridPane.getChildren().clear();
 
         int nCols = daysPerWeek + (getSkinnable().isShowWeekNumbers() ? 1 : 0);
@@ -359,21 +364,27 @@ public class AllyCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, All
             gridPane.getColumnConstraints().add(columnConstraints);
         }
 
+        RowConstraints rowConstraints = new RowConstraints();
+        rowConstraints.setPercentHeight(100); // Treated as height
+        for (int i = 0; i < 7; i++) {
+            gridPane.getRowConstraints().add(i, rowConstraints);
+        }
+
         for (int i = 0; i < daysPerWeek; i++) {
-            gridPane.add(dayNameCells.get(i), i + nCols - daysPerWeek, 1);  // col, row
+            gridPane.add(dayNameCells.get(i), i + nCols - daysPerWeek, 0);  // col, row
         }
 
         // Week number column
         if (getSkinnable().isShowWeekNumbers()) {
             for (int i = 0; i < 6; i++) {
-                gridPane.add(weekNumberCells.get(i), 0, i + 2);  // col, row
+                gridPane.add(weekNumberCells.get(i), 0, i + 1);  // col, row
             }
         }
 
         // setup: 6 rows of daysPerWeek (which is the maximum number of cells required in the worst case layout)
         for (int row = 0; row < 6; row++) {
             for (int col = 0; col < daysPerWeek; col++) {
-                gridPane.add(dayCells.get(row * daysPerWeek + col), col + nCols - daysPerWeek, row + 2);
+                gridPane.add(dayCells.get(row * daysPerWeek + col), col + nCols - daysPerWeek, row + 1);
             }
         }
     }

@@ -3,7 +3,6 @@ package com.allynote.allyFx.behavior;
 import com.allynote.allyFx.control.AllyCalendarView;
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
 import com.sun.javafx.scene.control.behavior.KeyBinding;
-import javafx.scene.control.ListView;
 
 import java.util.ArrayList;
 import java.util.List;

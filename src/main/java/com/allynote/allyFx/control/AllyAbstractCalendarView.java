@@ -20,7 +20,6 @@ import com.sun.javafx.scene.control.skin.resources.ControlResources;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.WritableValue;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
 import javafx.css.StyleableBooleanProperty;
@@ -38,7 +37,7 @@ import java.util.Locale;
 
 public abstract class AllyAbstractCalendarView<T extends Control> extends Control {
 
-    private static final String DEFAULT_STYLE = "/css/allydefault.css";
+    private static final String DEFAULT_STYLE = "css/allydefault.css";
 
     /**
      * The default class name used for styling.
@@ -115,10 +114,9 @@ public abstract class AllyAbstractCalendarView<T extends Control> extends Contro
         chronology.setValue(value);
     }
 
+
     public AllyAbstractCalendarView() {
-
         getStyleClass().add(DEFAULT_STYLE_CLASS);
-
     }
 
 
@@ -129,7 +127,6 @@ public abstract class AllyAbstractCalendarView<T extends Control> extends Contro
     public String getUserAgentStylesheet() {
         return DEFAULT_STYLE;
     }
-
 
     /**
      * {@inheritDoc}
