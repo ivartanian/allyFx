@@ -29,31 +29,31 @@ import java.time.LocalDate;
 
 public class AllyCalendarView extends AllyAbstractCalendarView<DateCell> {
 
-    private ObjectProperty<LocalDate> selectedDate;
+    private ObjectProperty<LocalDate> selectedValue;
 
     public AllyCalendarView() {
         this(LocalDate.now());
     }
 
-    public AllyCalendarView(LocalDate selectedDate) {
-        this(selectedDate, true);
+    public AllyCalendarView(LocalDate selectedValue) {
+        this(selectedValue, true);
     }
 
-    public AllyCalendarView(LocalDate selectedDate, Boolean showMonthYearPane) {
-        this.selectedDate = new SimpleObjectProperty<>(selectedDate);
+    public AllyCalendarView(LocalDate selectedValue, Boolean showMonthYearPane) {
+        this.selectedValue = new SimpleObjectProperty<>(selectedValue);
         this.showMonthYearPane = new SimpleBooleanProperty(showMonthYearPane);
     }
 
-    public LocalDate getSelectedDate() {
-        return selectedDate.get();
+    public LocalDate getSelectedValue() {
+        return selectedValue.get();
     }
 
-    public ObjectProperty<LocalDate> selectedDateProperty() {
-        return selectedDate;
+    public ObjectProperty<LocalDate> selectedValueProperty() {
+        return selectedValue;
     }
 
-    public void setSelectedDate(LocalDate pSelectedDate) {
-        selectedDate.set(pSelectedDate);
+    public void setSelectedValue(LocalDate pSelectedDate) {
+        selectedValue.set(pSelectedDate);
     }
 
     private BooleanProperty showMonthYearPane;
@@ -86,4 +86,6 @@ public class AllyCalendarView extends AllyAbstractCalendarView<DateCell> {
     protected Skin<?> createDefaultSkin() {
         return new AllyCalendarViewSkin(this);
     }
+
+
 }

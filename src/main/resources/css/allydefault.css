@@ -1,41 +1,50 @@
 /*******************************************************************************
  *                                                                             *
- * Default ally calendar (caspian)                                                                 *
+ * Default ally calendar (modena)                                                                 *
  *                                                                             *
  ******************************************************************************/
 
 .ally-calendar-view {
-    -fx-background-color: -fx-box-border, -fx-control-inner-background;
+    -fx-background-color:
+            linear-gradient(to bottom,
+            derive(-fx-color,-17%),
+            derive(-fx-color,-30%)
+            ),
+            -fx-control-inner-background;
     -fx-background-insets: 0, 1;
-    /*-fx-background-radius: 0 6 6 6, 0 5 5 5;*/
     -fx-background-radius: 0;
-    -fx-padding: 0;
     -fx-alignment: CENTER; /* VBox */
     -fx-spacing: 0; /* VBox */
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 8, 0.0 , 0 , 0 );
+    -fx-padding: 0.083333em; /* 1 1 1 1 */
+    /*-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 12, 0.0 , 0 , 8 );*/
 }
 .ally-calendar-view > .month-year-pane {
-    -fx-padding: 0.5em; /* 6 6 6 6 */
-    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
-    -fx-background-insets: 0, 1, 2;
-    -fx-background-radius: 0;
+    -fx-padding: 0.588883em 0.5em 0.666667em 0.5em; /* 7 6 8 6 */
+    -fx-background-color: derive(-fx-box-border,30%), linear-gradient(to bottom, derive(-fx-base,-3%), derive(-fx-base,5%) 50%, derive(-fx-base,-3%));
+    -fx-background-insets: 0 0 0 0, 0 0 1 0;
 }
 .ally-calendar-view > * > .spinner {
-    -fx-spacing: 0.25em;
+    -fx-spacing: 0.25em; /* 3 */
     -fx-alignment: CENTER;
     -fx-fill-height: false;
+    -fx-background-color: transparent;
 }
 .ally-calendar-view > * > .spinner > .button {
-    -fx-background-color: transparent;
+    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 0, 1, 2;
+    -fx-color: transparent;
     -fx-background-radius: 0;
 }
-.ally-calendar-view > * > .spinner > .button:hover {
-    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
-    -fx-background-radius: 3, 2, 1;
-}
 .ally-calendar-view > * > .spinner > .button:focused {
-    -fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-focus-color, -fx-body-color;
-    -fx-background-radius: 3, 2, 1;
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color;
+    -fx-color: -fx-hover-base;
+    -fx-background-insets: -0.2, 1, 2, -1.4, 2.6;
+}
+.ally-calendar-view > * > .spinner > .button:hover {
+    -fx-color: -fx-hover-base;
+}
+.ally-calendar-view > * > .spinner > .button:armed {
+    -fx-color: -fx-pressed-base;
 }
 .ally-calendar-view > * > .spinner > .left-button {
     -fx-padding: 0 0.333333em 0 0.25em; /* 0 4 0 3 */
@@ -43,18 +52,29 @@
 .ally-calendar-view > * > .spinner > .right-button {
     -fx-padding: 0 0.25em 0 0.333333em; /* 0 3 0 4 */
 }
+.ally-calendar-view > * > .spinner > .button > .left-arrow,
 .ally-calendar-view > * > .spinner > .button > .right-arrow {
-    -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
+    -fx-background-color: -fx-mark-highlight-color, derive(-fx-base,-45%);
     -fx-background-insets: 1 0 -1 0, 0;
-    -fx-padding: 0.5em 0.333333em 0 0; /* 6 4 0 0 */
-    -fx-shape: "M 4 0 L 0 -3 L 0 3 z";
-    -fx-scale-shape: true;
+    -fx-padding: 0.333333em 0.166667em 0.333333em 0.166667em; /* 4 2 4 2 */
+    -fx-effect: dropshadow(two-pass-box , -fx-shadow-highlight-color, 1, 0.0 , 0, 1.4);
+}
+.ally-calendar-view > * > .spinner > .button:hover > .left-arrow,
+.ally-calendar-view > * > .spinner > .button:hover > .right-arrow {
+    -fx-background-color: -fx-mark-highlight-color, derive(-fx-base,-50%);
+}
+.ally-calendar-view > * > .spinner > .button:pressed > .left-arrow,
+.ally-calendar-view > * > .spinner > .button:pressed > .right-arrow {
+    -fx-background-color: -fx-mark-highlight-color, derive(-fx-base,-55%);
 }
 .ally-calendar-view > * > .spinner > .button > .left-arrow {
-    -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
-    -fx-background-insets: 1 0 -1 0, 0;
-    -fx-padding: 0.5em 0.333333em 0 0; /* 6 4 0 0 */
-    -fx-shape: "M 0 0 L 4 -3 L 4 3 z";
+    -fx-padding: 0.333333em 0.25em 0.333333em 0.166667em; /* 4 3 4 2 */
+    -fx-shape: "M5.997,5.072L5.995,6.501l-2.998-4l2.998-4l0.002,1.43l-1.976,2.57L5.997,5.072z";
+    -fx-scale-shape: true;
+}
+.ally-calendar-view > * > .spinner > .button > .right-arrow {
+    -fx-padding: 0.333333em 0.25em 0.333333em 0.166667em; /* 4 3 4 2 */
+    -fx-shape: "M2.998-0.07L3-1.499l2.998,4L3,6.501l-0.002-1.43l1.976-2.57L2.998-0.07z";
     -fx-scale-shape: true;
 }
 .ally-calendar-view > * > .spinner > .label {
@@ -63,32 +83,28 @@
 .ally-calendar-view > .month-year-pane > .secondary-label {
     -fx-alignment: BASELINE_CENTER;
     -fx-padding: 0.5em 0 0 0; /* 6 0 0 0 */
-    -fx-text-fill: firebrick;
+    -fx-text-fill: #f3622d;
 }
+
 .ally-calendar-view > .calendar-grid {
-    -fx-background-color: derive(-fx-base, 6.8%);
-    -fx-background-insets: 1;
-    -fx-padding: 1;
+    -fx-background-color: derive(-fx-selection-bar-non-focused, 60%);
+    /*-fx-background-insets: 1 0 0 0;*/
+    -fx-padding: 0;
 }
 .ally-calendar-view > * > .date-cell {
     -fx-background-color: transparent;
     -fx-background-insets: 1, 2;
-    -fx-padding: 0.166667em;
+    -fx-padding: 0;
     -fx-alignment: BASELINE_CENTER;
     -fx-opacity: 1.0;
-}
-.date-cell:disabled > * {
-    -fx-opacity: -fx-disabled-opacity;
 }
 .ally-calendar-view > * > .day-name-cell,
 .ally-calendar-view > * > .week-number-cell {
     -fx-font-size: 0.916667em;
 }
 .ally-calendar-view > * > .week-number-cell {
-    /* Add one pixel to the top padding to
-     * compensate for the smaller font size. */
-    -fx-padding: 0.416667em 0.583333em 0.333333em 0.583333em; /* 5 7 4 7 */
-    -fx-border-color: -fx-background;
+    -fx-padding: 0.333333em 0.583333em 0.333333em 0.583333em; /* 4 7 4 7 */
+    -fx-border-color: -fx-control-inner-background;
     -fx-border-width: 1px;
     -fx-background: -fx-control-inner-background;
     -fx-background-color: -fx-background;
@@ -96,8 +112,9 @@
 }
 .ally-calendar-view > * > .day-cell {
     -fx-padding: 0.333333em 0.583333em 0.333333em 0.583333em; /* 4 7 4 7 */
-    -fx-border-color: derive(-fx-control-inner-background,-10%);
+    -fx-border-color: derive(-fx-selection-bar-non-focused, 60%);
     -fx-border-width: 1px;
+    -fx-font-size: 1em;
     -fx-background: -fx-control-inner-background;
     -fx-background-color: -fx-background;
     -fx-text-fill: -fx-text-background-color;
@@ -108,22 +125,25 @@
     -fx-cell-size: 2.75em;
 }
 .ally-calendar-view > * > .day-cell > .secondary-text {
-    -fx-fill: firebrick;
+    -fx-fill: #f3622d;
 }
 .ally-calendar-view > * > .today {
-    -fx-background-color: -fx-control-inner-background, derive(-fx-base, -10%), -fx-control-inner-background;
+    -fx-background-color: -fx-control-inner-background, derive(-fx-selection-bar-non-focused, -20%), -fx-control-inner-background;
     -fx-background-insets: 1, 2, 3;
 }
 .ally-calendar-view > * > .day-cell:hover,
 .ally-calendar-view > * > .selected,
 .ally-calendar-view > * > .previous-month.selected,
 .ally-calendar-view > * > .next-month.selected {
-    -fx-background-color: -fx-selection-bar;
-    -fx-background: -fx-accent;
+    -fx-background: -fx-selection-bar;
+}
+.ally-calendar-view > * > .previous-month:hover,
+.ally-calendar-view > * > .next-month:hover {
+    -fx-background: -fx-selection-bar-non-focused;
 }
 .ally-calendar-view > * > .today:hover,
 .ally-calendar-view > * > .today.selected {
-    -fx-background-color: -fx-selection-bar, derive(-fx-base, -10%),-fx-selection-bar;
+    -fx-background-color: -fx-selection-bar, derive(-fx-selection-bar-non-focused, -20%),-fx-selection-bar;
 }
 .ally-calendar-view > * > .day-cell:focused,
 .ally-calendar-view > * > .today:focused {
@@ -132,18 +152,13 @@
 }
 .ally-calendar-view > * > .day-cell:focused:hover,
 .ally-calendar-view > * > .today:focused:hover,
-.ally-calendar-view > * > .today.selected:focused,
-.ally-calendar-view > * > .selected:focused {
+.ally-calendar-view > * > .selected:focused,
+.ally-calendar-view > * > .today.selected:focused {
     -fx-background-color: -fx-selection-bar, -fx-cell-focus-inner-border, -fx-selection-bar;
 }
 .ally-calendar-view > * > .previous-month,
 .ally-calendar-view > * > .next-month {
-    -fx-background: derive(-fx-control-inner-background,-5%);
-}
-.ally-calendar-view > * > .previous-month:hover,
-.ally-calendar-view > * > .next-month:hover {
-    -fx-background: lightgrey;
-    -fx-text-fill: -fx-dark-text-color;
+    -fx-background: derive(-fx-control-inner-background, -4%);
 }
 .ally-calendar-view > * > .day-cell:hover > .secondary-text,
 .ally-calendar-view > * > .previous-month > .secondary-text,
@@ -153,9 +168,10 @@
 }
 .ally-calendar-view > * > .previous-month.today,
 .ally-calendar-view > * > .next-month.today {
-    -fx-background-color: derive(-fx-control-inner-background,-5%), derive(-fx-base, -10%), derive(-fx-control-inner-background,-5%);
+    -fx-background-color: derive(-fx-control-inner-background, -4%), derive(-fx-selection-bar-non-focused, -20%), derive(-fx-control-inner-background, -4%);
 }
+
 .ally-calendar-view > * > .previous-month.today:hover,
 .ally-calendar-view > * > .next-month.today:hover {
-    -fx-background-color: lightgrey, derive(-fx-base, -10%), lightgrey;
+    -fx-background-color: -fx-selection-bar-non-focused, derive(-fx-selection-bar-non-focused, -20%), -fx-selection-bar-non-focused;
 }
