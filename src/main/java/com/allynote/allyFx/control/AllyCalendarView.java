@@ -29,6 +29,9 @@ import java.time.LocalDate;
 
 public class AllyCalendarView extends AllyAbstractCalendarView<DateCell, LocalDate> {
 
+    private static final String DEFAULT_STYLE = "css/allycalendarview.css";
+    private static final String DEFAULT_STYLE_CLASS = "ally-calendar-view";
+
     public AllyCalendarView() {
         this(LocalDate.now());
     }
@@ -38,6 +41,7 @@ public class AllyCalendarView extends AllyAbstractCalendarView<DateCell, LocalDa
     }
 
     public AllyCalendarView(LocalDate selectedValue, Boolean showMonthYearPane) {
+        getStyleClass().add(DEFAULT_STYLE_CLASS);
         this.selectedValue = new SimpleObjectProperty<>(selectedValue);
         this.showMonthYearPane = new SimpleBooleanProperty(showMonthYearPane);
     }
@@ -65,12 +69,14 @@ public class AllyCalendarView extends AllyAbstractCalendarView<DateCell, LocalDa
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Skin<?> createDefaultSkin() {
         return new AllyCalendarViewSkin(this);
+    }
+
+    @Override
+    public String getUserAgentStylesheet() {
+        return DEFAULT_STYLE;
     }
 
 

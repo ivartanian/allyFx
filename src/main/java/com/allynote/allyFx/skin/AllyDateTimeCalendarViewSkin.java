@@ -36,7 +36,7 @@ public class AllyDateTimeCalendarViewSkin extends AllyAbstractCalendarViewSkin<A
     @Override
     protected void createComponents() {
         hBox = new HBox();
-        hBox.getStyleClass().add("ally-calendar-view");
+        hBox.getStyleClass().add("ally-timecalendar-view");
 
         //TODO: create time vizualization
 

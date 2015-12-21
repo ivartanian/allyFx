@@ -38,9 +38,6 @@ import java.util.Locale;
 
 public abstract class AllyAbstractCalendarView<T extends Control, V> extends Control {
 
-    private static final String DEFAULT_STYLE = "css/allycalendarview.css";
-    private static final String DEFAULT_STYLE_CLASS = "ally-calendar-view";
-
     protected ObjectProperty<V> selectedValue;
     public V getSelectedValue() {
         return selectedValue.get();
@@ -120,20 +117,6 @@ public abstract class AllyAbstractCalendarView<T extends Control, V> extends Con
     }
     public final void setChronology(Chronology value) {
         chronology.setValue(value);
-    }
-
-
-    public AllyAbstractCalendarView() {
-        getStyleClass().add(DEFAULT_STYLE_CLASS);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getUserAgentStylesheet() {
-        return DEFAULT_STYLE;
     }
 
     /**

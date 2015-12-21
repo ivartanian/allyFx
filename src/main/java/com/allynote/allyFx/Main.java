@@ -27,6 +27,7 @@ public class Main extends Application {
         Pane pane = new Pane();
 
         AllyDateTimeCalendarView fxMonthView = new AllyDateTimeCalendarView();
+//        AllyCalendarView fxMonthView = new AllyCalendarView();
         fxMonthView.setShowWeekNumbers(true);
         pane.getChildren().addAll(fxMonthView);
 
