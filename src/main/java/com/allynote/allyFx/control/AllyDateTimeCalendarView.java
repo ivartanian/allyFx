@@ -16,6 +16,7 @@
 package com.allynote.allyFx.control;
 
 import com.allynote.allyFx.skin.AllyCalendarViewSkin;
+import com.allynote.allyFx.skin.AllyDateTimeCalendarViewSkin;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -27,29 +28,18 @@ import javafx.util.StringConverter;
 import java.time.LocalDate;
 
 
-public class AllyCalendarView extends AllyAbstractCalendarView<DateCell, LocalDate> {
+public class AllyDateTimeCalendarView extends AllyAbstractCalendarView<DateCell, LocalDate> {
 
-    public AllyCalendarView() {
+    public AllyDateTimeCalendarView() {
         this(LocalDate.now());
     }
 
-    public AllyCalendarView(LocalDate selectedValue) {
+    public AllyDateTimeCalendarView(LocalDate selectedValue) {
         this(selectedValue, true);
     }
 
-    public AllyCalendarView(LocalDate selectedValue, Boolean showMonthYearPane) {
+    public AllyDateTimeCalendarView(LocalDate selectedValue, Boolean showMonthYearPane) {
         this.selectedValue = new SimpleObjectProperty<>(selectedValue);
-        this.showMonthYearPane = new SimpleBooleanProperty(showMonthYearPane);
-    }
-
-    private BooleanProperty showMonthYearPane;
-
-    public final void setShowMonthYearPane(boolean value) {
-        showMonthYearPane.setValue(value);
-    }
-
-    public final boolean isShowMonthYearPane() {
-        return showMonthYearPane.getValue();
     }
 
     private StringConverter<LocalDate> defaultConverter = null;
@@ -70,7 +60,7 @@ public class AllyCalendarView extends AllyAbstractCalendarView<DateCell, LocalDa
      */
     @Override
     protected Skin<?> createDefaultSkin() {
-        return new AllyCalendarViewSkin(this);
+        return new AllyDateTimeCalendarViewSkin(this);
     }
 
 

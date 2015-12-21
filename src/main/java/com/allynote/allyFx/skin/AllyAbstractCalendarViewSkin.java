@@ -1,13 +1,13 @@
 package com.allynote.allyFx.skin;
 
-import com.allynote.allyFx.behavior.AllyCalendarViewBehavior;
+import com.allynote.allyFx.behavior.AllyAbstractCalendarBehavior;
 import com.allynote.allyFx.control.AllyAbstractCalendarView;
-import com.allynote.allyFx.control.AllyCalendarView;
 import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.scene.control.Cell;
 import javafx.scene.control.Control;
 import javafx.scene.control.DateCell;
 import javafx.scene.input.MouseButton;
@@ -35,10 +35,11 @@ import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoUnit.*;
 
 
-public abstract class AllyAbstractCalendarViewSkin extends BehaviorSkinBase<AllyCalendarView, AllyCalendarViewBehavior> {
+public abstract class AllyAbstractCalendarViewSkin<T extends AllyAbstractCalendarView<DateCell, LocalDate>, B extends AllyAbstractCalendarBehavior<T>> extends BehaviorSkinBase<T, B> {
 
     protected GridPane gridPane;
-    protected final AllyCalendarView allyCalendarView;
+
+    protected final T control;
 
     private int daysPerWeek;
     private List<DateCell> dayNameCells = new ArrayList<>();
@@ -62,13 +63,13 @@ public abstract class AllyAbstractCalendarViewSkin extends BehaviorSkinBase<Ally
     protected DateTimeFormatter weekDayNameFormatter = DateTimeFormatter.ofPattern("ccc"); // Standalone day name
     protected DateTimeFormatter dayCellFormatter = DateTimeFormatter.ofPattern("d");
 
-    public AllyAbstractCalendarViewSkin(final AllyCalendarView allyCalendarView) {
+    public AllyAbstractCalendarViewSkin(final T control, final B behavior) {
 
-        super(allyCalendarView, new AllyCalendarViewBehavior(allyCalendarView));
-        this.allyCalendarView = allyCalendarView;
+        super(control, behavior);
+        this.control = control;
 
         {
-            LocalDate date = allyCalendarView.getSelectedValue();
+            LocalDate date = this.control.getSelectedValue();
             displayedYearMonth.set((date != null) ? YearMonth.from(date) : YearMonth.now());
         }
 

@@ -1,5 +1,6 @@
 //package com.allynote.allyFx.skin;
 //
+//import com.allynote.allyFx.behavior.AllyAbstractCalendarBehavior;
 //import com.allynote.allyFx.behavior.AllyCalendarViewBehavior;
 //import com.allynote.allyFx.control.AllyCalendarView;
 //import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
@@ -119,7 +120,7 @@
 ////            protected double computePrefHeight(double width) {
 ////                final double height = super.computePrefHeight(width);
 ////
-////                final int nRows = 6 + 1 + (allyCalendarView.isShowMonthYearPane() ? 1 : 0);
+////                final int nRows = 6 + 1 + (control.isShowMonthYearPane() ? 1 : 0);
 ////                final double snapvgap = snapSpace(getVgap());
 ////                final double top = snapSpace(getInsets().getTop());
 ////                final double bottom = snapSpace(getInsets().getBottom());

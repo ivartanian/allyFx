@@ -36,14 +36,21 @@ import java.util.List;
 import java.util.Locale;
 
 
-public abstract class AllyAbstractCalendarView<T extends Control> extends Control {
+public abstract class AllyAbstractCalendarView<T extends Control, V> extends Control {
 
-    private static final String DEFAULT_STYLE = "css/allydefault.css";
-
-    /**
-     * The default class name used for styling.
-     */
+    private static final String DEFAULT_STYLE = "css/allycalendarview.css";
     private static final String DEFAULT_STYLE_CLASS = "ally-calendar-view";
+
+    protected ObjectProperty<V> selectedValue;
+    public V getSelectedValue() {
+        return selectedValue.get();
+    }
+    public ObjectProperty<V> selectedValueProperty() {
+        return selectedValue;
+    }
+    public void setSelectedValue(V selectedValue) {
+        this.selectedValue.set(selectedValue);
+    }
 
     public final BooleanProperty showWeekNumbersProperty() {
         if (showWeekNumbers == null) {

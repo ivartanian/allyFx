@@ -2,40 +2,19 @@ package com.allynote.allyFx.skin;
 
 import com.allynote.allyFx.behavior.AllyCalendarViewBehavior;
 import com.allynote.allyFx.control.AllyCalendarView;
-import com.sun.javafx.scene.control.skin.BehaviorSkinBase;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Chronology;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DecimalStyle;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.ValueRange;
-import java.time.temporal.WeekFields;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
-import static java.time.temporal.ChronoField.DAY_OF_WEEK;
-import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoUnit.*;
 
 
-public class AllyCalendarViewSkin extends AllyAbstractCalendarViewSkin {
+public class AllyCalendarViewSkin extends AllyAbstractCalendarViewSkin<AllyCalendarView, AllyCalendarViewBehavior> {
 
     private VBox vBox;
 
@@ -47,7 +26,7 @@ public class AllyCalendarViewSkin extends AllyAbstractCalendarViewSkin {
     private Label yearLabel;
 
     public AllyCalendarViewSkin(final AllyCalendarView allyCalendarView) {
-        super(allyCalendarView);
+        super(allyCalendarView, new AllyCalendarViewBehavior(allyCalendarView));
     }
 
     @Override
@@ -59,7 +38,7 @@ public class AllyCalendarViewSkin extends AllyAbstractCalendarViewSkin {
     protected void createComponents() {
         vBox = new VBox();
         vBox.getStyleClass().add("ally-calendar-view");
-        if (allyCalendarView.isShowMonthYearPane()) {
+        if (control.isShowMonthYearPane()) {
             vBox.getChildren().add(createMonthYearPane());
         }
         vBox.getChildren().add(gridPane);
