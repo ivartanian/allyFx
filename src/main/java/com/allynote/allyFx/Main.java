@@ -2,17 +2,13 @@ package com.allynote.allyFx;/**
  * Created by super on 12/15/15.
  */
 
-import com.allynote.allyFx.control.AllyCalendarView;
-import com.allynote.allyFx.control.AllyDateTimeCalendarView;
+import com.allynote.allyFx.control.AllyDesignCalendarView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Spinner;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
-import java.time.LocalDateTime;
 
 public class Main extends Application {
 
@@ -26,7 +22,7 @@ public class Main extends Application {
 
         Pane pane = new Pane();
 
-        AllyDateTimeCalendarView fxMonthView = new AllyDateTimeCalendarView();
+        AllyDesignCalendarView fxMonthView = new AllyDesignCalendarView();
 //        AllyCalendarView fxMonthView = new AllyCalendarView();
         fxMonthView.setShowWeekNumbers(true);
         pane.getChildren().addAll(fxMonthView);

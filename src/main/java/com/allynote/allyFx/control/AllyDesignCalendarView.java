@@ -1,12 +1,12 @@
 /*
  * Copyright 2015 SIB Visions GmbH
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,7 +15,7 @@
  */
 package com.allynote.allyFx.control;
 
-import com.allynote.allyFx.skin.AllyDateTimeCalendarViewSkin;
+import com.allynote.allyFx.skin.AllyDesignCalendarViewSkin;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.DateCell;
@@ -25,20 +25,20 @@ import javafx.util.StringConverter;
 import java.time.LocalDate;
 
 
-public class AllyDateTimeCalendarView extends AllyAbstractCalendarView<DateCell, LocalDate> {
+public class AllyDesignCalendarView extends AllyAbstractCalendarView<DateCell, LocalDate> {
 
-    private static final String DEFAULT_STYLE = "css/allytimecalendarview.css";
-    private static final String DEFAULT_STYLE_CLASS = "ally-timecalendar-view";
+    private static final String DEFAULT_STYLE = "css/allydesigncalendarview.css";
+    private static final String DEFAULT_STYLE_CLASS = "ally-designcalendar-view";
 
-    public AllyDateTimeCalendarView() {
+    public AllyDesignCalendarView() {
         this(LocalDate.now());
     }
 
-    public AllyDateTimeCalendarView(LocalDate selectedValue) {
+    public AllyDesignCalendarView(LocalDate selectedValue) {
         this(selectedValue, true);
     }
 
-    public AllyDateTimeCalendarView(LocalDate selectedValue, Boolean showMonthYearPane) {
+    public AllyDesignCalendarView(LocalDate selectedValue, Boolean showMonthYearPane) {
         getStyleClass().add(DEFAULT_STYLE_CLASS);
         this.selectedValue = new SimpleObjectProperty<>(selectedValue);
     }
@@ -61,7 +61,7 @@ public class AllyDateTimeCalendarView extends AllyAbstractCalendarView<DateCell,
      */
     @Override
     protected Skin<?> createDefaultSkin() {
-        return new AllyDateTimeCalendarViewSkin(this);
+        return new AllyDesignCalendarViewSkin(this);
     }
 
     @Override
