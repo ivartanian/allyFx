@@ -58,9 +58,9 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
 
     }
 
-    protected VBox createDayMonthYearPane() {
+    protected BorderPane createDayMonthYearPane() {
 
-        VBox dayMonthYearPane = new VBox();
+        BorderPane dayMonthYearPane = new BorderPane();
         dayMonthYearPane.getStyleClass().add("day-month-year-pane");
 
         // Day spinner
@@ -97,7 +97,8 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
         });
 
         daySpinner.getChildren().addAll(backDayButton, dayLabel, forwardDayButton);
-        dayMonthYearPane.getChildren().addAll(daySpinner);
+//        dayMonthYearPane.getChildren().addAll(daySpinner);
+        dayMonthYearPane.setTop(daySpinner);
 
         // Month spinner
 
@@ -133,7 +134,8 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
         });
 
         monthSpinner.getChildren().addAll(backMonthButton, monthLabel, forwardMonthButton);
-        dayMonthYearPane.getChildren().addAll(monthSpinner);
+//        dayMonthYearPane.getChildren().addAll(monthSpinner);
+        dayMonthYearPane.setCenter(monthSpinner);
 
         // Year spinner
 
@@ -170,7 +172,8 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
 
         yearSpinner.getChildren().addAll(backYearButton, yearLabel, forwardYearButton);
         yearSpinner.setFillHeight(false);
-        dayMonthYearPane.getChildren().addAll(yearSpinner);
+//        dayMonthYearPane.getChildren().addAll(yearSpinner);
+        dayMonthYearPane.setBottom(yearSpinner);
 
         return dayMonthYearPane;
 
@@ -179,7 +182,7 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
     protected BorderPane createGridSpinnerPane() {
 
         BorderPane monthSpinnerPane = new BorderPane();
-        monthSpinnerPane.getStyleClass().add("month-spinner-pane");
+        monthSpinnerPane.getStyleClass().add("calendar-spinner-pane");
 
         // Month spinner
 
