@@ -58,122 +58,123 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
 
     }
 
-    protected BorderPane createDayMonthYearPane() {
+    protected VBox createDayMonthYearPane() {
 
-        BorderPane dayMonthYearPane = new BorderPane();
+        VBox dayMonthYearPane = new VBox();
         dayMonthYearPane.getStyleClass().add("day-month-year-pane");
 
         // Day spinner
 
         HBox daySpinner = new HBox();
-        daySpinner.getStyleClass().add("spinner");
+        daySpinner.getStyleClass().add("day-month-spinner");
 
-        backDayButton = new Button();
-        backDayButton.getStyleClass().add("left-button");
-
-        forwardDayButton = new Button();
-        forwardDayButton.getStyleClass().add("right-button");
-
-        StackPane leftDayArrow = new StackPane();
-        leftDayArrow.getStyleClass().add("left-arrow");
-        leftDayArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        backDayButton.setGraphic(leftDayArrow);
-
-        StackPane rightDayArrow = new StackPane();
-        rightDayArrow.getStyleClass().add("right-arrow");
-        rightDayArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        forwardDayButton.setGraphic(rightDayArrow);
-
-
-        backDayButton.setOnAction(t -> {
-            forward(-1, DAYS, false);
-        });
+//        backDayButton = new Button();
+//        backDayButton.getStyleClass().add("left-button");
+//
+//        forwardDayButton = new Button();
+//        forwardDayButton.getStyleClass().add("right-button");
+//
+//        StackPane leftDayArrow = new StackPane();
+//        leftDayArrow.getStyleClass().add("left-arrow");
+//        leftDayArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+//        backDayButton.setGraphic(leftDayArrow);
+//
+//        StackPane rightDayArrow = new StackPane();
+//        rightDayArrow.getStyleClass().add("right-arrow");
+//        rightDayArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+//        forwardDayButton.setGraphic(rightDayArrow);
+//
+//
+//        backDayButton.setOnAction(t -> {
+//            forward(-1, DAYS, false);
+//        });
 
         dayLabel = new Label();
         dayLabel.getStyleClass().add("spinner-label");
 
-        forwardDayButton.setOnAction(t -> {
-            forward(1, DAYS, false);
-        });
+//        forwardDayButton.setOnAction(t -> {
+//            forward(1, DAYS, false);
+//        });
 
-        daySpinner.getChildren().addAll(backDayButton, dayLabel, forwardDayButton);
-//        dayMonthYearPane.getChildren().addAll(daySpinner);
-        dayMonthYearPane.setTop(daySpinner);
+        daySpinner.getChildren().add(dayLabel);
+        dayMonthYearPane.getChildren().add(daySpinner);
 
         // Month spinner
 
         HBox monthSpinner = new HBox();
-        monthSpinner.getStyleClass().add("spinner");
+        monthSpinner.getStyleClass().add("day-month-spinner");
 
-        backMonthButton = new Button();
-        backMonthButton.getStyleClass().add("left-button");
-
-        forwardMonthButton = new Button();
-        forwardMonthButton.getStyleClass().add("right-button");
-
-        StackPane leftMonthArrow = new StackPane();
-        leftMonthArrow.getStyleClass().add("left-arrow");
-        leftMonthArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        backMonthButton.setGraphic(leftMonthArrow);
-
-        StackPane rightMonthArrow = new StackPane();
-        rightMonthArrow.getStyleClass().add("right-arrow");
-        rightMonthArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        forwardMonthButton.setGraphic(rightMonthArrow);
-
-
-        backMonthButton.setOnAction(t -> {
-            forward(-1, MONTHS, false);
-        });
+//        backMonthButton = new Button();
+//        backMonthButton.getStyleClass().add("left-button");
+//
+//        forwardMonthButton = new Button();
+//        forwardMonthButton.getStyleClass().add("right-button");
+//
+//        StackPane leftMonthArrow = new StackPane();
+//        leftMonthArrow.getStyleClass().add("left-arrow");
+//        leftMonthArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+//        backMonthButton.setGraphic(leftMonthArrow);
+//
+//        StackPane rightMonthArrow = new StackPane();
+//        rightMonthArrow.getStyleClass().add("right-arrow");
+//        rightMonthArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+//        forwardMonthButton.setGraphic(rightMonthArrow);
+//
+//
+//        backMonthButton.setOnAction(t -> {
+//            forward(-1, MONTHS, false);
+//        });
 
         monthLabel = new Label();
         monthLabel.getStyleClass().add("spinner-label");
 
-        forwardMonthButton.setOnAction(t -> {
-            forward(1, MONTHS, false);
-        });
+//        forwardMonthButton.setOnAction(t -> {
+//            forward(1, MONTHS, false);
+//        });
 
-        monthSpinner.getChildren().addAll(backMonthButton, monthLabel, forwardMonthButton);
-//        dayMonthYearPane.getChildren().addAll(monthSpinner);
-        dayMonthYearPane.setCenter(monthSpinner);
+        monthSpinner.getChildren().add(monthLabel);
+        dayMonthYearPane.getChildren().addAll(monthSpinner);
 
         // Year spinner
 
         HBox yearSpinner = new HBox();
-        yearSpinner.getStyleClass().add("spinner");
+        yearSpinner.getStyleClass().add("year-spinner");
 
-        backYearButton = new Button();
-        backYearButton.getStyleClass().add("left-button");
-
-        forwardYearButton = new Button();
-        forwardYearButton.getStyleClass().add("right-button");
-
-        StackPane leftYearArrow = new StackPane();
-        leftYearArrow.getStyleClass().add("left-arrow");
-        leftYearArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        backYearButton.setGraphic(leftYearArrow);
-
-        StackPane rightYearArrow = new StackPane();
-        rightYearArrow.getStyleClass().add("right-arrow");
-        rightYearArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        forwardYearButton.setGraphic(rightYearArrow);
-
-
-        backYearButton.setOnAction(t -> {
-            forward(-1, YEARS, false);
-        });
+//        backYearButton = new Button();
+//        backYearButton.getStyleClass().add("left-button");
+//
+//        forwardYearButton = new Button();
+//        forwardYearButton.getStyleClass().add("right-button");
+//
+//        StackPane leftYearArrow = new StackPane();
+//        leftYearArrow.getStyleClass().add("left-arrow");
+//        leftYearArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+//        backYearButton.setGraphic(leftYearArrow);
+//
+//        StackPane rightYearArrow = new StackPane();
+//        rightYearArrow.getStyleClass().add("right-arrow");
+//        rightYearArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+//        forwardYearButton.setGraphic(rightYearArrow);
+//
+//
+//        backYearButton.setOnAction(t -> {
+//            forward(-1, YEARS, false);
+//        });
 
         yearLabel = new Label();
         yearLabel.getStyleClass().add("spinner-label");
 
-        forwardYearButton.setOnAction(t -> {
-            forward(1, YEARS, false);
-        });
+//        forwardYearButton.setOnAction(t -> {
+//            forward(1, YEARS, false);
+//        });
 
-        yearSpinner.getChildren().addAll(backYearButton, yearLabel, forwardYearButton);
-        yearSpinner.setFillHeight(false);
-//        dayMonthYearPane.getChildren().addAll(yearSpinner);
-        dayMonthYearPane.setBottom(yearSpinner);
+        yearSpinner.getChildren().add(yearLabel);
+//        yearSpinner.setFillHeight(false);
+        dayMonthYearPane.getChildren().addAll(yearSpinner);
+
+//        daySpinner.prefHeightProperty().bind(dayMonthYearPane.heightProperty());
+//        monthSpinner.prefHeightProperty().bind(dayMonthYearPane.heightProperty());
+//        yearSpinner.prefHeightProperty().bind(dayMonthYearPane.heightProperty());
 
         return dayMonthYearPane;
 
@@ -282,14 +283,14 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
             yearLabel.setMinWidth(width);
         }
 
-        Chronology chrono = getSkinnable().getChronology();
-        LocalDate firstDayOfMonth = yearMonth.atDay(1);
-        backDayButton.setDisable(!isValidDate(chrono, selectedValue, -1, DAYS));
-        forwardDayButton.setDisable(!isValidDate(chrono, selectedValue, +1, DAYS));
-        backMonthButton.setDisable(!isValidDate(chrono, firstDayOfMonth, -1, DAYS));
-        forwardMonthButton.setDisable(!isValidDate(chrono, firstDayOfMonth, +1, MONTHS));
-        backYearButton.setDisable(!isValidDate(chrono, firstDayOfMonth, -1, YEARS));
-        forwardYearButton.setDisable(!isValidDate(chrono, firstDayOfMonth, +1, YEARS));
+//        Chronology chrono = getSkinnable().getChronology();
+//        LocalDate firstDayOfMonth = yearMonth.atDay(1);
+//        backDayButton.setDisable(!isValidDate(chrono, selectedValue, -1, DAYS));
+//        forwardDayButton.setDisable(!isValidDate(chrono, selectedValue, +1, DAYS));
+//        backMonthButton.setDisable(!isValidDate(chrono, firstDayOfMonth, -1, DAYS));
+//        forwardMonthButton.setDisable(!isValidDate(chrono, firstDayOfMonth, +1, MONTHS));
+//        backYearButton.setDisable(!isValidDate(chrono, firstDayOfMonth, -1, YEARS));
+//        forwardYearButton.setDisable(!isValidDate(chrono, firstDayOfMonth, +1, YEARS));
 
     }
 

@@ -24,14 +24,14 @@ public class Main extends Application {
 
         AllyDesignCalendarView fxMonthView = new AllyDesignCalendarView();
 //        AllyCalendarView fxMonthView = new AllyCalendarView();
-        fxMonthView.setShowWeekNumbers(true);
+        fxMonthView.setShowWeekNumbers(false);
         pane.getChildren().addAll(fxMonthView);
 
-        DatePicker datePicker = new DatePicker();
-        fxMonthView.selectedValueProperty().bindBidirectional(datePicker.valueProperty());
+//        DatePicker datePicker = new DatePicker();
+//        fxMonthView.selectedValueProperty().bindBidirectional(datePicker.valueProperty());
 //        pane.getChildren().addAll(fxMonthView, datePicker);
 
-        root.setTop(datePicker);
+//        root.setTop(datePicker);
         root.setCenter(fxMonthView);
 
         Scene scene = new Scene(root, 600, 400);
