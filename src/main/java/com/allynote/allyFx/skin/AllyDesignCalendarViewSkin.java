@@ -3,13 +3,12 @@ package com.allynote.allyFx.skin;
 import com.allynote.allyFx.behavior.AllyDesignCalendarViewBehavior;
 import com.allynote.allyFx.control.AllyDesignCalendarView;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.time.MonthDay;
-import java.time.YearMonth;
+import java.time.*;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Chronology;
 import java.util.Locale;
@@ -28,13 +27,9 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
     private Label monthLabel;
     private Label yearLabel;
 
-    private Button backDayButton;
-    private Button forwardDayButton;
-    private Button backMonthButton;
-    private Button forwardMonthButton;
-    private Button backYearButton;
-    private Button forwardYearButton;
-
+    private ComboBox<String> dayComboBox;
+    private ComboBox<String> monthComboBox;
+    private ComboBox<String> yearComboBox;
 
     public AllyDesignCalendarViewSkin(final AllyDesignCalendarView allyCalendarView) {
         super(allyCalendarView, new AllyDesignCalendarViewBehavior(allyCalendarView));
@@ -47,14 +42,43 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
 
     @Override
     protected void createComponents() {
+
         hBox = new HBox();
         hBox.getStyleClass().add("ally-designcalendar-view");
+
+        hBox.getChildren().add(createComboBoxDatePane());
 
         hBox.getChildren().add(createDayMonthYearPane());
 
         hBox.getChildren().add(createGridSpinnerPane());
 
         getChildren().add(hBox);
+
+    }
+
+    protected HBox createComboBoxDatePane() {
+
+        HBox dayMonthYearPane = new HBox();
+        dayMonthYearPane.getStyleClass().add("combo-boxes-date-pane");
+
+        // Day ComboBox
+
+        dayComboBox = new ComboBox<>();
+        dayComboBox.getStyleClass().add("day-combobox");
+
+        // Month ComboBox
+
+        monthComboBox = new ComboBox<>();
+        monthComboBox.getStyleClass().add("month-combobox");
+
+        // Year ComboBox
+
+        yearComboBox = new ComboBox<>();
+        yearComboBox.getStyleClass().add("year-combobox");
+
+        dayMonthYearPane.getChildren().addAll(dayComboBox, monthComboBox, yearComboBox);
+
+        return dayMonthYearPane;
 
     }
 
@@ -68,33 +92,8 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
         HBox daySpinner = new HBox();
         daySpinner.getStyleClass().add("day-month-spinner");
 
-//        backDayButton = new Button();
-//        backDayButton.getStyleClass().add("left-button");
-//
-//        forwardDayButton = new Button();
-//        forwardDayButton.getStyleClass().add("right-button");
-//
-//        StackPane leftDayArrow = new StackPane();
-//        leftDayArrow.getStyleClass().add("left-arrow");
-//        leftDayArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-//        backDayButton.setGraphic(leftDayArrow);
-//
-//        StackPane rightDayArrow = new StackPane();
-//        rightDayArrow.getStyleClass().add("right-arrow");
-//        rightDayArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-//        forwardDayButton.setGraphic(rightDayArrow);
-//
-//
-//        backDayButton.setOnAction(t -> {
-//            forward(-1, DAYS, false);
-//        });
-
         dayLabel = new Label();
         dayLabel.getStyleClass().add("spinner-label");
-
-//        forwardDayButton.setOnAction(t -> {
-//            forward(1, DAYS, false);
-//        });
 
         daySpinner.getChildren().add(dayLabel);
         dayMonthYearPane.getChildren().add(daySpinner);
@@ -104,33 +103,8 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
         HBox monthSpinner = new HBox();
         monthSpinner.getStyleClass().add("day-month-spinner");
 
-//        backMonthButton = new Button();
-//        backMonthButton.getStyleClass().add("left-button");
-//
-//        forwardMonthButton = new Button();
-//        forwardMonthButton.getStyleClass().add("right-button");
-//
-//        StackPane leftMonthArrow = new StackPane();
-//        leftMonthArrow.getStyleClass().add("left-arrow");
-//        leftMonthArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-//        backMonthButton.setGraphic(leftMonthArrow);
-//
-//        StackPane rightMonthArrow = new StackPane();
-//        rightMonthArrow.getStyleClass().add("right-arrow");
-//        rightMonthArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-//        forwardMonthButton.setGraphic(rightMonthArrow);
-//
-//
-//        backMonthButton.setOnAction(t -> {
-//            forward(-1, MONTHS, false);
-//        });
-
         monthLabel = new Label();
         monthLabel.getStyleClass().add("spinner-label");
-
-//        forwardMonthButton.setOnAction(t -> {
-//            forward(1, MONTHS, false);
-//        });
 
         monthSpinner.getChildren().add(monthLabel);
         dayMonthYearPane.getChildren().addAll(monthSpinner);
@@ -140,41 +114,15 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
         HBox yearSpinner = new HBox();
         yearSpinner.getStyleClass().add("year-spinner");
 
-//        backYearButton = new Button();
-//        backYearButton.getStyleClass().add("left-button");
-//
-//        forwardYearButton = new Button();
-//        forwardYearButton.getStyleClass().add("right-button");
-//
-//        StackPane leftYearArrow = new StackPane();
-//        leftYearArrow.getStyleClass().add("left-arrow");
-//        leftYearArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-//        backYearButton.setGraphic(leftYearArrow);
-//
-//        StackPane rightYearArrow = new StackPane();
-//        rightYearArrow.getStyleClass().add("right-arrow");
-//        rightYearArrow.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-//        forwardYearButton.setGraphic(rightYearArrow);
-//
-//
-//        backYearButton.setOnAction(t -> {
-//            forward(-1, YEARS, false);
-//        });
-
         yearLabel = new Label();
         yearLabel.getStyleClass().add("spinner-label");
 
-//        forwardYearButton.setOnAction(t -> {
-//            forward(1, YEARS, false);
-//        });
-
         yearSpinner.getChildren().add(yearLabel);
-//        yearSpinner.setFillHeight(false);
         dayMonthYearPane.getChildren().addAll(yearSpinner);
 
-//        daySpinner.prefHeightProperty().bind(dayMonthYearPane.heightProperty());
-//        monthSpinner.prefHeightProperty().bind(dayMonthYearPane.heightProperty());
-//        yearSpinner.prefHeightProperty().bind(dayMonthYearPane.heightProperty());
+        daySpinner.prefHeightProperty().bind(dayMonthYearPane.heightProperty());
+        monthSpinner.prefHeightProperty().bind(dayMonthYearPane.heightProperty());
+        yearSpinner.prefHeightProperty().bind(dayMonthYearPane.heightProperty());
 
         return dayMonthYearPane;
 
@@ -224,6 +172,7 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
     }
 
     protected void updateExtraPane(){
+        updateComboBoxDatePane();
         updateMonthPane();
     }
 
@@ -250,6 +199,39 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
 //        }
 //    }
 
+    protected void updateComboBoxDatePane() {
+
+        YearMonth yearMonth = displayedYearMonth.get();
+
+        //format day
+        LocalDate selectedValue = getSkinnable().getSelectedValue();
+        if (selectedValue == null){
+            selectedValue = yearMonth.atDay(1);
+        }
+        String str = formatDay(selectedValue);
+        dayComboBox.getItems().add(str);
+        double width = computeTextWidth(dayComboBox.getEditor().getFont(), str, 0);
+        if (width > dayComboBox.getMinWidth()) {
+            dayComboBox.setMinWidth(width * 5);
+        }
+
+        //format month
+        str = formatMonth(yearMonth);
+        monthComboBox.getItems().add(str);
+        width = computeTextWidth(monthComboBox.getEditor().getFont(), str, 0);
+        if (width > monthComboBox.getMinWidth()) {
+            monthComboBox.setMinWidth(width * 2);
+        }
+
+        //format year
+        str = formatYear(yearMonth);
+        yearComboBox.getItems().add(str);
+        width = computeTextWidth(yearComboBox.getEditor().getFont(), str, 0);
+        if (width > yearComboBox.getMinWidth()) {
+            yearComboBox.setMinWidth(width * 3);
+        }
+
+    }
 
     protected void updateMonthPane() {
 
@@ -282,15 +264,6 @@ public class AllyDesignCalendarViewSkin extends AllyAbstractCalendarViewSkin<All
         if (width > yearLabel.getMinWidth()) {
             yearLabel.setMinWidth(width);
         }
-
-//        Chronology chrono = getSkinnable().getChronology();
-//        LocalDate firstDayOfMonth = yearMonth.atDay(1);
-//        backDayButton.setDisable(!isValidDate(chrono, selectedValue, -1, DAYS));
-//        forwardDayButton.setDisable(!isValidDate(chrono, selectedValue, +1, DAYS));
-//        backMonthButton.setDisable(!isValidDate(chrono, firstDayOfMonth, -1, DAYS));
-//        forwardMonthButton.setDisable(!isValidDate(chrono, firstDayOfMonth, +1, MONTHS));
-//        backYearButton.setDisable(!isValidDate(chrono, firstDayOfMonth, -1, YEARS));
-//        forwardYearButton.setDisable(!isValidDate(chrono, firstDayOfMonth, +1, YEARS));
 
     }
 
